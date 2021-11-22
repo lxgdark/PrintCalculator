@@ -28,7 +28,6 @@ Namespace DataClasses
             Dim percent As Double = 200 - costPriceForAll / 200
             If percent < 40 Then percent = 40
             result = costPriceForAll + costPriceForAll / 100 * percent
-            If result < 1000 Then result = result + 300
             Return result
         End Function
 #End Region

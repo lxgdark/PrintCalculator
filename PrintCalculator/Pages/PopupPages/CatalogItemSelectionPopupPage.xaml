@@ -38,7 +38,7 @@
                                         <ControlTemplate TargetType="{x:Type GroupItem}">
                                             <StackPanel>
                                                 <Border Margin="0,8,0,8" Background="{DynamicResource BackgroundStandartColor}" Tag="{Binding}" Padding="5" CornerRadius="{DynamicResource BorderCornerRadiusMax}">
-                                                    <TextBlock HorizontalAlignment="Center" FontSize="14" FontWeight="Bold" Text="{Binding Name, Converter={local:CataloGrouCodeToNameConverter}}"/>
+                                                    <TextBlock HorizontalAlignment="Center" FontSize="14" FontWeight="Bold" Text="{Binding Name, Converter={local:CataloGroupCodeToNameConverter}}"/>
                                                 </Border>
                                                 <Border CornerRadius="{DynamicResource BorderCornerRadiusMini}">
                                                     <ItemsPresenter HorizontalAlignment="Stretch"/>

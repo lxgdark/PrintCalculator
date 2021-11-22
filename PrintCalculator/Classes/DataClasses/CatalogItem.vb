@@ -5,13 +5,13 @@ Namespace DataClasses
 #Region "Свойства"
 #Region "Внутренние"
         Private nameValue As String = ""
-        Private priceValue As Double = 0
         Private codeValue As String = ""
         Private costPriceValue As Double = 0
         Private unitValue As String = ""
         Private groupCodeValue As String = ""
         Private commentValue As String = ""
-        Private itemCategoryValue As ItemCategoryEnum = ItemCategoryEnum.Paper
+        Private itemCategoryValue As ItemCategoryEnum = ItemCategoryEnum.NONE
+        Private itemTagValue As String = ""
 #End Region
         ''' <summary>
         ''' Наименование наменклатуры
@@ -24,19 +24,6 @@ Namespace DataClasses
             Set(value As String)
                 nameValue = value
                 OnPropertyChanged(NameOf(Name))
-            End Set
-        End Property
-        ''' <summary>
-        ''' Цена продажи
-        ''' </summary>
-        ''' <returns></returns>
-        Public Property Price As Double
-            Get
-                Return priceValue
-            End Get
-            Set(value As Double)
-                priceValue = value
-                OnPropertyChanged(NameOf(Price))
             End Set
         End Property
         ''' <summary>
@@ -92,7 +79,7 @@ Namespace DataClasses
             End Set
         End Property
         ''' <summary>
-        ''' Категория текущей позиции (бумага, услуга, позиция постпечатки...)
+        ''' Категория текущей позиции (материал или услуга)
         ''' </summary>
         ''' <returns></returns>
         Public Property ItemCategory As ItemCategoryEnum
@@ -117,33 +104,37 @@ Namespace DataClasses
                 OnPropertyChanged(NameOf(Comment))
             End Set
         End Property
+        ''' <summary>
+        ''' Тэг пункта каталога, опредиляющий его к подвидам материалов или услуг
+        ''' </summary>
+        ''' <returns></returns>
+        Public Property ItemTag As String
+            Get
+                Return itemTagValue
+            End Get
+            Set(value As String)
+                itemTagValue = value
+                OnPropertyChanged(NameOf(ItemTag))
+            End Set
+        End Property
 #End Region
 #Region "Перечеслители и типы"
+        ''' <summary>
+        ''' Глобальная категория пункта каталога (материал или услуга)
+        ''' </summary>
         Public Enum ItemCategoryEnum
             ''' <summary>
             ''' Категория неопеределена или не задана
             ''' </summary>
             NONE = 0
             ''' <summary>
-            ''' Бумага (дизайнерская, синтетика, самоклейка -  то есть все на чем можно печатать)
+            ''' Материал (бумага, ламинация, пружинки и т.д.)
             ''' </summary>
-            PAPER = 1
+            MATERIAL = 1
             ''' <summary>
             ''' Услуга печати
             ''' </summary>
-            SERVICEPRINT = 2000
-            ''' <summary>
-            ''' Услуга резки
-            ''' </summary>
-            SERVICECUT = 2001
-            ''' <summary>
-            ''' Услуга постпечатки
-            ''' </summary>
-            SERVICEPOSTPRINT = 2002
-            ''' <summary>
-            ''' Gthtpfrfpsdftvst eckeub
-            ''' </summary>
-            SERVICEOTHER = 2003
+            SERVICE = 2
         End Enum
 #End Region
     End Class

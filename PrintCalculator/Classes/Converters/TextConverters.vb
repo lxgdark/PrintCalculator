@@ -21,9 +21,14 @@ End Class
 ''' <summary>
 ''' Конвертирует код раздела каталога в понятное наименование
 ''' </summary>
-Public Class CataloGrouCodeToNameConverter
-    Inherits ConvertorBase(Of CataloGrouCodeToNameConverter)
+Public Class CataloGroupCodeToNameConverter
+    Inherits ConvertorBase(Of CataloGroupCodeToNameConverter)
     Public Overrides Function Convert(value As Object, targetType As Type, parameter As Object, culture As CultureInfo) As Object
-        Return CatalogGroupNameWorker.GetItemName(value)
+        Dim str As String() = value.ToString.Split("$".ToCharArray, StringSplitOptions.RemoveEmptyEntries)
+        If str.Length = 4 Then
+            Return str(3)
+        Else
+            Return value
+        End If
     End Function
 End Class

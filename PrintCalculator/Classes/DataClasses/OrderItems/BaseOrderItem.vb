@@ -66,7 +66,7 @@ Namespace DataClasses
         ''' </summary>
         ''' <param name="unit"></param>
         ''' <returns></returns>
-        Protected Function GetSheetSize(unit As String) As Size
+        Public Shared Function GetSheetSize(unit As String) As Size
             'Базовый размер листа 450х320
             Dim result As New Size(450, 320)
             'Если единица измерения начинается с L...

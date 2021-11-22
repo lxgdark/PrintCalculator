@@ -63,22 +63,20 @@ Namespace Workers
                             Dim catalogItem As New CatalogItem
                             'Имя позиции
                             catalogItem.Name = cell.Value
-                            'Цена позиции (задается если она не пустая и имеет значение типа Double)
-                            catalogItem.Price = IIf(TypeOf catalogSheet.Cell(cell.WorksheetRow.RowNumber, 2).Value Is Double, catalogSheet.Cell(cell.WorksheetRow.RowNumber, 2).Value, 0)
+                            'Себестоимость позиции (задается если она не пустая и имеет значение типа Double)
+                            catalogItem.CostPrice = IIf(TypeOf catalogSheet.Cell(cell.WorksheetRow.RowNumber, 2).Value Is Double, catalogSheet.Cell(cell.WorksheetRow.RowNumber, 2).Value, 0)
                             'Код позиции
                             catalogItem.Code = catalogSheet.Cell(cell.WorksheetRow.RowNumber, 3).Value
-                            'Себестоимость позиции (задается если она не пустая и имеет значение типа Double)
-                            catalogItem.CostPrice = IIf(TypeOf catalogSheet.Cell(cell.WorksheetRow.RowNumber, 4).Value Is Double, catalogSheet.Cell(cell.WorksheetRow.RowNumber, 4).Value, 0)
                             'Единица измерения
-                            catalogItem.Unit = catalogSheet.Cell(cell.WorksheetRow.RowNumber, 5).Value
+                            catalogItem.Unit = catalogSheet.Cell(cell.WorksheetRow.RowNumber, 4).Value
                             'Код раздела
-                            catalogItem.GroupCode = catalogSheet.Cell(cell.WorksheetRow.RowNumber, 6).Value
+                            catalogItem.GroupCode = catalogSheet.Cell(cell.WorksheetRow.RowNumber, 5).Value
                             'Комментарий к позиции
-                            catalogItem.Comment = catalogSheet.Cell(cell.WorksheetRow.RowNumber, 7).Value
+                            catalogItem.Comment = catalogSheet.Cell(cell.WorksheetRow.RowNumber, 6).Value
                             'Категория позиции (вычесленная на основе кода группы)
-                            catalogItem.ItemCategory = CatalogGroupNameWorker.GetItemCategory(catalogItem.GroupCode)
-                            'Если себестоимость ровна нулю (так бывает у услуг), то задаем в качестве себестоимость цену продажи (такой лайфхак для установки себестоимости услуг)
-                            If catalogItem.CostPrice = 0 Then catalogItem.CostPrice = catalogItem.Price
+                            catalogItem.ItemCategory = GetItemCategory(catalogItem.GroupCode)
+                            'Тэг подраздела каталога
+                            catalogItem.ItemTag = GetItemTag(catalogItem.GroupCode)
                             'Добавляем позицию в общий список
                             result.Add(catalogItem)
                         End If
@@ -89,6 +87,45 @@ Namespace Workers
                 Return New List(Of CatalogItem)
             End Try
             Return result
+        End Function
+
+        ''' <summary>
+        ''' Возвращает категорию каталога
+        ''' </summary>
+        ''' <param name="groupCode"></param>
+        ''' <returns></returns>
+        Private Function GetItemCategory(groupCode As String) As CatalogItem.ItemCategoryEnum
+            'Разбиваем код каталога составляющие разделенные знаком $
+            Dim str As String() = groupCode.ToString.Split("$".ToCharArray, StringSplitOptions.RemoveEmptyEntries)
+            'У правильного кода составляющих 4 (цифррвой код для сортировки, буквенный код соновного раздела, буквенный тэг подраздела и название раздела для отображения в каталоге)
+            If str.Length = 4 Then
+                'Если это правильный код...
+                If str(1) = "MATERIAL" Then
+                    '... и его основной раздел материал, то сразу вохвращаем соответствующее значение
+                    Return CatalogItem.ItemCategoryEnum.MATERIAL
+                ElseIf str(1) = "SERVICE" Then
+                    '... и его основной раздел услуга, то сразу вохвращаем соответствующее значение
+                    Return CatalogItem.ItemCategoryEnum.SERVICE
+                End If
+            End If
+            'Если код был не верным или неопределен, возврачаем заглушку
+            Return CatalogItem.ItemCategoryEnum.NONE
+        End Function
+        ''' <summary>
+        ''' Возвращает тег
+        ''' </summary>
+        ''' <param name="groupCode"></param>
+        ''' <returns></returns>
+        Private Function GetItemTag(groupCode As String) As String
+            'Разбиваем код каталога составляющие разделенные знаком $
+            Dim str As String() = groupCode.ToString.Split("$".ToCharArray, StringSplitOptions.RemoveEmptyEntries)
+            'У правильного кода составляющих 4 (цифррвой код для сортировки, буквенный код соновного раздела, буквенный тэг подраздела и название раздела для отображения в каталоге)
+            If str.Length = 4 Then
+                'Возвращаем тетью часть строки кода каталога. В ней содержится тег раздела
+                Return str(2)
+            End If
+            'Если код каталога имел не верный формат, возвращаем пустую строку
+            Return ""
         End Function
 #End Region
 #End Region

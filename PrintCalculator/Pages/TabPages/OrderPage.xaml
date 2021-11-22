@@ -64,7 +64,10 @@
                         <Border BorderBrush="{DynamicResource BorderDarkColor}" BorderThickness="1" CornerRadius="1" Margin="0,15,0,15"/>
                         <!--#region Выбор бумаги-->
                         <DockPanel LastChildFill="True">
-                            <Button Style="{DynamicResource IconButtonStyle}" x:Name="SelectPaperButton" Click="SelectPaperButton_Click" Content="/Pict/Buttons/Order.png" ToolTip="Выбрать из каталога" DockPanel.Dock="Right" Tag="{Binding}" Margin="5,0,0,0"/>
+                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                                <Button Style="{DynamicResource IconButtonStyle}" x:Name="SetPersonalPaper" Click="SetPersonalPaper_Click" Content="/Pict/Buttons/Edit.png" ToolTip="Задать бумагу вручную" Tag="{Binding}" Margin="5,0,0,0"/>
+                                <Button Style="{DynamicResource IconButtonStyle}" x:Name="SelectPaperButton" Click="SelectPaperButton_Click" Content="/Pict/Buttons/Order.png" ToolTip="Выбрать из каталога" Tag="{Binding}" Margin="5,0,0,0"/>
+                            </StackPanel>
                             <TextBox IsReadOnly="True" Text="{Binding PaperItem.Name}"/>
                         </DockPanel>
                         <TextBlock FontSize="10">Себестоимость: <Run Text="{Binding PaperItem.CostPrice, ConverterCulture=ru-RU, StringFormat=C}"/></TextBlock>
@@ -171,8 +174,12 @@
                             </ItemsControl.ContextMenu>
                         </ItemsControl>
                     </ScrollViewer>
-                    <Button x:Name="AddStandardOrderItemButton" Grid.Row="1" Content="Добавить стандартную составную часть" Margin="0,5,2.5,0" Click="AddStandardOrderItemButton_Click"/>
-                    <Button x:Name="AddOneCatalogOrderItemButton" Grid.Row="1" Grid.Column="1" Content="Добавить отдельную составную часть" Margin="2.5,5,0,0" Click="AddOneCatalogOrderItemButton_Click"/>
+                    <Button x:Name="AddStandardOrderItemButton" Grid.Row="1" Margin="0,5,2.5,0" Click="AddStandardOrderItemButton_Click">
+                        <TextBlock Text="Добавить стандартную составную часть" TextWrapping="Wrap"/>
+                    </Button>
+                    <Button x:Name="AddOneCatalogOrderItemButton" Grid.Row="1" Grid.Column="1" Margin="2.5,5,0,0" Click="AddOneCatalogOrderItemButton_Click">
+                        <TextBlock Text="Добавить отдельную составную часть" TextWrapping="Wrap"/>
+                    </Button>
                     <Button Width="15" Padding="0" Margin="2,5,0,0" ToolTip="Дополнительные варианты составных частей" Grid.Column="2" Grid.Row="1">
                         <Path Data="{StaticResource UpArrovGeomertry}" HorizontalAlignment="Center" SnapsToDevicePixels="false" Stroke="{DynamicResource BorderLightColor}" StrokeThickness="2" VerticalAlignment="Center"/>
                     </Button>

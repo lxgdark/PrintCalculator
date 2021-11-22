@@ -110,6 +110,9 @@
     <Compile Include="Pages\PopupPages\CatalogItemSelectionPopupPage.xaml.vb">
       <DependentUpon>CatalogItemSelectionPopupPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\PopupPages\CreatePersonalPaperPopupPage.xaml.vb">
+      <DependentUpon>CreatePersonalPaperPopupPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\PopupPages\PaperSizeParametrPopupPage.xaml.vb">
       <DependentUpon>PaperSizeParametrPopupPage.xaml</DependentUpon>
     </Compile>
@@ -121,9 +124,6 @@
     </Compile>
     <Compile Include="Pages\TabPages\OrderPage.xaml.vb">
       <DependentUpon>OrderPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\TabPages\OrderPresetPage.xaml.vb">
-      <DependentUpon>OrderPresetPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\TabPages\StartPage.xaml.vb">
       <DependentUpon>StartPage.xaml</DependentUpon>
@@ -164,7 +164,6 @@
     <Compile Include="Classes\DataClasses\ThemeClass.vb" />
     <Compile Include="Classes\Service\MyCustom.vb" />
     <Compile Include="Classes\Workers\BaseWorker.vb" />
-    <Compile Include="Classes\Workers\CatalogGroupNameWorker.vb" />
     <Compile Include="Classes\Workers\CatalogWorker.vb" />
     <Compile Include="Classes\Workers\GlobalPageWorker.vb" />
     <Compile Include="Classes\Workers\MessageWorker.vb" />
@@ -181,6 +180,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\PopupPages\CreatePersonalPaperPopupPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\PopupPages\PaperSizeParametrPopupPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -194,10 +197,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\TabPages\OrderPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\TabPages\OrderPresetPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

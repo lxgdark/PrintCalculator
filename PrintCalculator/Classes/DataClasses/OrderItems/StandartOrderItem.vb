@@ -12,9 +12,9 @@ Namespace DataClasses
         Private isProductLargePaperValue As Boolean = True
         Private isValidCostPriceValue As Boolean = False
         Private isProductOrientationEqualsPaperOrientationValue As Boolean = False
-        Private paperItemValue As New CatalogItem
-        Private printItemValue As New CatalogItem
-        Private cutItemValue As New CatalogItem
+        Private paperItemValue As New CatalogItem With {.ItemCategory = CatalogItem.ItemCategoryEnum.MATERIAL, .ItemTag = "PAPER"}
+        Private printItemValue As New CatalogItem With {.ItemCategory = CatalogItem.ItemCategoryEnum.SERVICE, .ItemTag = "PRINT"}
+        Private cutItemValue As New CatalogItem With {.ItemCategory = CatalogItem.ItemCategoryEnum.SERVICE, .ItemTag = "CUT"}
         Private pageCountValue As Integer = 1
         Private pageMinimumCountValue As Integer = 1
         Private isProductCatalogValue As Boolean = False
@@ -243,7 +243,7 @@ Namespace DataClasses
             ProductCostPrice = 0
             SetMinimumPage()
             'Проверяем заданы ли все обязательные параметры для расчета себестоимости
-            IsValidCostPrice = PaperItem.Name <> "" And PrintItem.Name <> "" And CutItem.Name <> ""
+            IsValidCostPrice = PaperItem.CostPrice > 0 And PrintItem.Name <> "" And CutItem.Name <> ""
             'Если печать в режиме каталога
             If IsProductCatalog Then
                 'Проверяем, что число полос кратно 4

@@ -12,17 +12,18 @@ Class CatalogItemSelectionPopupPage
     ''' <summary>
     ''' Установка стартовых параметров
     ''' </summary>
-    ''' <param name="iCategory"></param>
     ''' <param name="calculationSub"></param>
-    Public Sub SetParametr(_catalogItem As CatalogItem, iCategory As CatalogItem.ItemCategoryEnum, calculationSub As [Delegate])
+    Public Sub SetParametr(_catalogItem As CatalogItem, calculationSub As [Delegate])
         'Определяем ссылку на список каталога, для фильтрации
         CatalogListSource = TryFindResource("CatalogSource")
         'Сохраняем делегат, который нужно вызвать по завершению
         Calculation = calculationSub
-        'Определяем категорю позиций отображаемых в каталоге
-        ItemCategory = iCategory
         'Созраняем ссылку на текущю составную часть заказа
         catalogItem = _catalogItem
+        'Определяем категорю позиций отображаемых в каталоге
+        ItemCategory = _catalogItem.ItemCategory
+        ItemTag = _catalogItem.ItemTag
+        AddHandler CatalogListSource.Filter, AddressOf FilterCatalog
     End Sub
 #End Region
 
@@ -35,14 +36,11 @@ Class CatalogItemSelectionPopupPage
     ''' </summary>
     ''' <returns></returns>
     Public Property ItemCategory As CatalogItem.ItemCategoryEnum
-        Get
-            Return ItemCategoryValue
-        End Get
-        Set(value As CatalogItem.ItemCategoryEnum)
-            ItemCategoryValue = value
-            AddHandler CatalogListSource.Filter, AddressOf FilterCatalog
-        End Set
-    End Property
+    ''' <summary>
+    ''' Тэг подраздела
+    ''' </summary>
+    ''' <returns></returns>
+    Public Property ItemTag As String
 #End Region
 #Region "Поиск по каталогу"
     ''' <summary>
@@ -74,7 +72,8 @@ Class CatalogItemSelectionPopupPage
             'Определяем переменную результата фильтрации (да/нет)
             Dim result As Boolean = True
             'Проверяем соответсвуют ли текущая позиция каталога фильтрации по категории
-            result = result AndAlso citem.ItemCategory = ItemCategory Or (ItemCategory = catalogItem.ItemCategoryEnum.NONE)
+            result = result AndAlso citem.ItemCategory = ItemCategory Or (ItemCategory = CatalogItem.ItemCategoryEnum.NONE)
+            result = result AndAlso citem.ItemTag = ItemTag Or (ItemTag = "")
             'Разбиваем строку поиска на слова
             Dim strmass() As String = FindTextBox.Text.ToLower.Split(" ".ToCharArray, StringSplitOptions.RemoveEmptyEntries)
             'Проходим по массиву слов и проверяем удовлетворяет ли поиск данным словам

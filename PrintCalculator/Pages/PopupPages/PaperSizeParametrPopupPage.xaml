@@ -8,7 +8,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <!--#region Настройка полей/вылетов-->
-            <StackPanel  TextBlock.Foreground="{DynamicResource TextDarkColor}" TextBlock.FontSize="14" TextBlock.FontWeight="SemiBold">
+            <StackPanel TextBlock.Foreground="{DynamicResource TextDarkColor}" TextBlock.FontSize="14" TextBlock.FontWeight="SemiBold">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock x:Name="FieldWidthTextBlock" Margin="0,0,5,0" VerticalAlignment="Center"/>
                     <xceed:IntegerUpDown x:Name="FieldWidthIntegerUpDown" ValueChanged="FieldWidthIntegerUpDown_ValueChanged" Margin="0,0,5,0" Minimum="0"/>

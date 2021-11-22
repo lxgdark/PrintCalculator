@@ -37,12 +37,12 @@ Class MainPage
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     Private Sub AddPresetOrder_Click(sender As Object, e As RoutedEventArgs)
-        'Переходим на главную страницу
-        My.AppCore.CurentSelectedPage = AppCore.CurentSelectedPageEnum.Home
-        'Добавляем в глобальный список страниц новую страницу работы с шаблонами расчетов
-        My.AppCore.GlobalPagesList.Add(New GlobalPageWorker With {.Header = "Новый расчет по шаблону", .IsStartPage = False, .OrderObject = New OrderPresetPage})
-        'Переходим к последней добавленной странице
-        OrderTabControl.SelectedIndex = My.AppCore.GlobalPagesList.Count - 1
+        ''Переходим на главную страницу
+        'My.AppCore.CurentSelectedPage = AppCore.CurentSelectedPageEnum.Home
+        ''Добавляем в глобальный список страниц новую страницу работы с шаблонами расчетов
+        'My.AppCore.GlobalPagesList.Add(New GlobalPageWorker With {.Header = "Новый расчет по шаблону", .IsStartPage = False, .OrderObject = New OrderPresetPage})
+        ''Переходим к последней добавленной странице
+        'OrderTabControl.SelectedIndex = My.AppCore.GlobalPagesList.Count - 1
     End Sub
 #End Region
 #Region "Работа с вкладками (закрытие, смена заголовка)"

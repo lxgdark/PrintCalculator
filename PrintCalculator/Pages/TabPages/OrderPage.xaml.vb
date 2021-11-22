@@ -110,6 +110,17 @@ Class OrderPage
         OrderItemParameterPopup.IsOpen = True
     End Sub
     ''' <summary>
+    ''' Задание персональной бумаги, отсутствующей в каталоге
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub SetPersonalPaper_Click(sender As Object, e As RoutedEventArgs)
+        Dim page As New CreatePersonalPaperPopupPage
+        page.SetParametr(CType(sender.Tag, StandartOrderItem).PaperItem, New CalculationDelegate(AddressOf Calculation))
+        OrderItemParameterFrame.Content = page
+        OrderItemParameterPopup.IsOpen = True
+    End Sub
+    ''' <summary>
     ''' Настройка размера изделия
     ''' </summary>
     ''' <param name="sender"></param>
@@ -138,7 +149,7 @@ Class OrderPage
     ''' <param name="e"></param>
     Private Sub SelectPaperButton_Click(sender As Object, e As RoutedEventArgs)
         Dim page As New CatalogItemSelectionPopupPage
-        page.SetParametr(CType(sender.Tag, StandartOrderItem).PaperItem, CatalogItem.ItemCategoryEnum.PAPER, New CalculationDelegate(AddressOf Calculation))
+        page.SetParametr(CType(sender.Tag, StandartOrderItem).PaperItem, New CalculationDelegate(AddressOf Calculation))
         OrderItemParameterFrame.Content = page
         OrderItemParameterPopup.IsOpen = True
     End Sub
@@ -149,7 +160,7 @@ Class OrderPage
     ''' <param name="e"></param>
     Private Sub SelectPrintButton_Click(sender As Object, e As RoutedEventArgs)
         Dim page As New CatalogItemSelectionPopupPage
-        page.SetParametr(CType(sender.Tag, StandartOrderItem).PrintItem, CatalogItem.ItemCategoryEnum.SERVICEPRINT, New CalculationDelegate(AddressOf Calculation))
+        page.SetParametr(CType(sender.Tag, StandartOrderItem).PrintItem, New CalculationDelegate(AddressOf Calculation))
         OrderItemParameterFrame.Content = page
         OrderItemParameterPopup.IsOpen = True
     End Sub
@@ -160,7 +171,7 @@ Class OrderPage
     ''' <param name="e"></param>
     Private Sub SelectCutButton_Click(sender As Object, e As RoutedEventArgs)
         Dim page As New CatalogItemSelectionPopupPage
-        page.SetParametr(CType(sender.Tag, StandartOrderItem).CutItem, CatalogItem.ItemCategoryEnum.SERVICECUT, New CalculationDelegate(AddressOf Calculation))
+        page.SetParametr(CType(sender.Tag, StandartOrderItem).CutItem, New CalculationDelegate(AddressOf Calculation))
         OrderItemParameterFrame.Content = page
         OrderItemParameterPopup.IsOpen = True
     End Sub
@@ -182,7 +193,7 @@ Class OrderPage
     ''' <param name="e"></param>
     Private Sub SelectOthetCatalogItemButton_Click(sender As Object, e As RoutedEventArgs)
         Dim page As New CatalogItemSelectionPopupPage
-        page.SetParametr(CType(sender.Tag, OtherStandartOrderActionItem).CatalogItem, CatalogItem.ItemCategoryEnum.NONE, New CalculationDelegate(AddressOf Calculation))
+        page.SetParametr(CType(sender.Tag, OtherStandartOrderActionItem).CatalogItem, New CalculationDelegate(AddressOf Calculation))
         OrderItemParameterFrame.Content = page
         OrderItemParameterPopup.IsOpen = True
     End Sub
@@ -220,7 +231,6 @@ Class OrderPage
         SelectOneCatalogItemButton_Click(New Button With {.Tag = ocpoi}, Nothing)
         ''Вызываем стартовый просчет внутри составной части
         ocpoi.Calculation()
-
     End Sub
     ''' <summary>
     ''' Поисходит приажаааааааакопки выбора позиции из каталога
@@ -229,7 +239,7 @@ Class OrderPage
     ''' <param name="e"></param>
     Private Sub SelectOneCatalogItemButton_Click(sender As Object, e As RoutedEventArgs)
         Dim page As New CatalogItemSelectionPopupPage
-        page.SetParametr(CType(sender.Tag, OneCatalogPositionOrderItem).CatalogItem, CatalogItem.ItemCategoryEnum.NONE, New CalculationDelegate(AddressOf Calculation))
+        page.SetParametr(CType(sender.Tag, OneCatalogPositionOrderItem).CatalogItem, New CalculationDelegate(AddressOf Calculation))
         OrderItemParameterFrame.Content = page
         OrderItemParameterPopup.IsOpen = True
     End Sub
@@ -299,4 +309,6 @@ Class OrderPage
         'Добавляем в глобальный список страниц новую
         My.AppCore.GlobalPagesList.Add(New GlobalPageWorker With {.Header = "Новый расчет", .IsStartPage = False, .OrderObject = newSOP})
     End Sub
+
+
 End Class

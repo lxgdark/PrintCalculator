@@ -1,0 +1,331 @@
+﻿<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5B723F5D-0030-4C5A-AE8B-04D93D0C5B4B}</ProjectGuid>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</ProjectTypeGuids>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>PrintCalculator</RootNamespace>
+    <AssemblyName>PrintCalculator</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <MyType>Custom</MyType>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <IncrementalBuild>true</IncrementalBuild>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>PrintCalculator.xml</DocumentationFile>
+    <NoWarn>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036,42314</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <IncrementalBuild>false</IncrementalBuild>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>PrintCalculator.xml</DocumentationFile>
+    <NoWarn>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036,42314</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Binary</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>Off</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ClosedXML, Version=0.95.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ClosedXML.0.95.4\lib\net46\ClosedXML.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.14.0.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocumentFormat.OpenXml.2.14.0\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelNumberFormat, Version=1.1.0.0, Culture=neutral, PublicKeyToken=23c6f5d73be07eca, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelNumberFormat.1.1.0\lib\net20\ExcelNumberFormat.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.FileSystem.Primitives.4.3.0\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Packaging, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Packaging.6.0.0\lib\net461\System.IO.Packaging.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=4.1.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.4.1.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=4.1.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.4.1.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=4.1.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.4.1.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=4.1.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.4.1.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=4.1.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.4.1.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="Application.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="MainPage.xaml.vb">
+      <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\PopupPages\CatalogItemSelectionPopupPage.xaml.vb">
+      <DependentUpon>CatalogItemSelectionPopupPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\PopupPages\PaperSizeParametrPopupPage.xaml.vb">
+      <DependentUpon>PaperSizeParametrPopupPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\PopupPages\ProductLayoutPopupPage.xaml.vb">
+      <DependentUpon>ProductLayoutPopupPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\SettingPage.xaml.vb">
+      <DependentUpon>SettingPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\TabPages\OrderPage.xaml.vb">
+      <DependentUpon>OrderPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\TabPages\OrderPresetPage.xaml.vb">
+      <DependentUpon>OrderPresetPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\TabPages\StartPage.xaml.vb">
+      <DependentUpon>StartPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ThemePage.xaml.vb">
+      <DependentUpon>ThemePage.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Controls\WaitControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="Application.xaml.vb">
+      <DependentUpon>Application.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Classes\AppCore.vb" />
+    <Compile Include="Classes\Converters\BaseConverters.vb" />
+    <Compile Include="Classes\Converters\MessageBoxConverters.vb" />
+    <Compile Include="Classes\Converters\TextConverters.vb" />
+    <Compile Include="Classes\Converters\ThemeConverters.vb" />
+    <Compile Include="Classes\DataClasses\CatalogItem.vb" />
+    <Compile Include="Classes\DataClasses\Formula\CalculationFormula.vb" />
+    <Compile Include="Classes\DataClasses\LocalSettings.vb" />
+    <Compile Include="Classes\DataClasses\OrderItems\BaseOrderItem.vb" />
+    <Compile Include="Classes\DataClasses\OrderItems\OneCatalogPositionOrderItem.vb" />
+    <Compile Include="Classes\DataClasses\OrderItems\StandartOrderItem.vb" />
+    <Compile Include="Classes\DataClasses\OrderPages\StandartOrderPage.vb" />
+    <Compile Include="Classes\DataClasses\PaperSizeItem.vb" />
+    <Compile Include="Classes\DataClasses\PrintCopyCountItem.vb" />
+    <Compile Include="Classes\DataClasses\ThemeClass.vb" />
+    <Compile Include="Classes\Service\MyCustom.vb" />
+    <Compile Include="Classes\Workers\BaseWorker.vb" />
+    <Compile Include="Classes\Workers\CatalogGroupNameWorker.vb" />
+    <Compile Include="Classes\Workers\CatalogWorker.vb" />
+    <Compile Include="Classes\Workers\GlobalPageWorker.vb" />
+    <Compile Include="Classes\Workers\MessageWorker.vb" />
+    <Compile Include="Classes\Workers\PaperSizeWorker.vb" />
+    <Compile Include="Classes\Workers\ThemeWorker.vb" />
+    <Compile Include="Controls\WaitControl.xaml.vb">
+      <DependentUpon>WaitControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MainWindow.xaml.vb">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="Pages\PopupPages\CatalogItemSelectionPopupPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\PopupPages\PaperSizeParametrPopupPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\PopupPages\ProductLayoutPopupPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\SettingPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\TabPages\OrderPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\TabPages\OrderPresetPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\TabPages\StartPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\ThemePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\BaseResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\ControlStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="System.Threading.Tasks" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Windows" />
+    <Import Include="System.Windows.Controls" />
+    <Import Include="System.Windows.Data" />
+    <Import Include="System.Windows.Documents" />
+    <Import Include="System.Windows.Input" />
+    <Import Include="System.Windows.Shapes" />
+    <Import Include="System.Windows.Media" />
+    <Import Include="System.Windows.Media.Imaging" />
+    <Import Include="System.Windows.Navigation" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="My Project\AssemblyInfo.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="My Project\MyExtensions\MyWpfExtension.vb">
+      <VBMyExtensionTemplateID>Microsoft.VisualBasic.WPF.MyExtension</VBMyExtensionTemplateID>
+      <VBMyExtensionTemplateVersion>1.0.0.0</VBMyExtensionTemplateVersion>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+    </EmbeddedResource>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Pict\Buttons\Avatar.png" />
+    <Resource Include="Pict\Buttons\Catalog.png" />
+    <Resource Include="Pict\Buttons\CatalogLeft.png" />
+    <Resource Include="Pict\Buttons\CatalogRight.png" />
+    <Resource Include="Pict\Buttons\Chat.png" />
+    <Resource Include="Pict\Buttons\Close.png" />
+    <Resource Include="Pict\Buttons\Computer.png" />
+    <Resource Include="Pict\Buttons\Copy.png" />
+    <Resource Include="Pict\Buttons\Dialog.png" />
+    <Resource Include="Pict\Buttons\Download.png" />
+    <Resource Include="Pict\Buttons\Edit.png" />
+    <Resource Include="Pict\Buttons\Home.png" />
+    <Resource Include="Pict\Buttons\Information.png" />
+    <Resource Include="Pict\Buttons\Links.png" />
+    <Resource Include="Pict\Buttons\Magnet.png" />
+    <Resource Include="Pict\Buttons\MessageLinks.png" />
+    <Resource Include="Pict\Buttons\Open.png" />
+    <Resource Include="Pict\Buttons\Order.png" />
+    <Resource Include="Pict\Buttons\Photo.png" />
+    <Resource Include="Pict\Buttons\Plus.png" />
+    <Resource Include="Pict\Buttons\PlusPerezakaz.png" />
+    <Resource Include="Pict\Buttons\PlusPreset.png" />
+    <Resource Include="Pict\Buttons\Quote.png" />
+    <Resource Include="Pict\Buttons\Remove.png" />
+    <Resource Include="Pict\Buttons\Reply.png" />
+    <Resource Include="Pict\Buttons\Save.png" />
+    <Resource Include="Pict\Buttons\SendMessage.png" />
+    <Resource Include="Pict\Buttons\Service.png" />
+    <Resource Include="Pict\Buttons\Settings.png" />
+    <Resource Include="Pict\Buttons\Smyle.png" />
+    <Resource Include="Pict\Buttons\Theme.png" />
+    <Resource Include="Pict\Buttons\Upload.png" />
+    <Resource Include="Pict\Buttons\UserFile.png" />
+    <Resource Include="Pict\Buttons\WorkCalendar.png" />
+    <Resource Include="Pict\Buttons\Сalculator.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Pict\Global\Avatar.png" />
+    <Resource Include="Pict\Global\Close.png" />
+    <Resource Include="Pict\Global\Maximaze.png" />
+    <Resource Include="Pict\Global\Minimaze.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Pict\Logo\ConnectLogo1.png" />
+    <Resource Include="Pict\Logo\ConnectLogo2.png" />
+    <Resource Include="Pict\Logo\Logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Pict\MessageBox\ErrorMessage.png" />
+    <Resource Include="Pict\MessageBox\InfoMessage.png" />
+    <Resource Include="Pict\MessageBox\YesNo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icon.ico" />
+    <SplashScreen Include="SplashScreen.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+</Project>

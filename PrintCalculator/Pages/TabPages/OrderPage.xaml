@@ -1,0 +1,247 @@
+﻿<Page x:Class="OrderPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:cm="clr-namespace:System.ComponentModel;assembly=WindowsBase" xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"  xmlns:local="clr-namespace:PrintCalculator" xmlns:dclass="clr-namespace:PrintCalculator.DataClasses" 
+      Loaded="Page_Loaded" Title="Новый расчет">
+    <Page.Resources>
+        <!--#region Стандартная состовная часть-->
+        <DataTemplate DataType="{x:Type dclass:StandartOrderItem}">
+            <Border Background="{DynamicResource BackgroundStandartColor}" Margin="0,0,0,25" Padding="5" CornerRadius="4" PreviewMouseRightButtonDown="OrderItem_PreviewMouseRightButtonDown" Tag="{Binding}">
+                <Expander IsExpanded="True" Header="{Binding ItemHeader, Mode=TwoWay}" Style="{DynamicResource OrderItemExpander }">
+                    <StackPanel>
+                        <!--#region Размер печатного листа-->
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Размер печатной области (листа) (ШхВ):" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                            <xceed:IntegerUpDown Margin="0,0,5,0" Value="{Binding PrintPaperSize.Width}" ValueChanged="Calculation"/>
+                            <TextBlock Text="X" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                            <xceed:IntegerUpDown Value="{Binding PrintPaperSize.Height}" ValueChanged="Calculation" CultureInfo="ru-RU"/>
+                            <Button x:Name="PrintPaperSizeParametrButton" Style="{DynamicResource IconButtonStyle}" Content="/Pict/Buttons/Settings.png" ToolTip="Дополнительные параметры размера" Click="PrintPaperSizeParametrButton_Click" Tag="{Binding}"/>
+                            <Border Background="{DynamicResource MessageBoxErrorColor}" Height="25" Width="25" Margin="5,0,0,0" ToolTip="Размер изделия больше размера бумаги" Visibility="{Binding IsProductLargePaper, Converter={local:BooleanToVisibleConverter}, ConverterParameter=Not}">
+                                <Border.OpacityMask>
+                                    <ImageBrush ImageSource="/Pict/Buttons/Information.png" Stretch="Uniform"/>
+                                </Border.OpacityMask>
+                            </Border>
+                        </StackPanel>
+                        <TextBlock FontSize="11" Margin="0,3,0,0">Отступ от края листа: лево/право - <Run Text="{Binding PrintPaperSize.FieldWidth}"/> мм, верх/низ - <Run Text="{Binding PrintPaperSize.FieldHeight}"/> мм</TextBlock>
+                        <!--#endregion-->
+                        <Border BorderBrush="{DynamicResource BorderDarkColor}" BorderThickness="1" CornerRadius="1" Margin="0,15,0,15"/>
+                        <!--#region Размер изделия-->
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Размер изделия (ШхВ):" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                            <xceed:IntegerUpDown Margin="0,0,5,0" Value="{Binding ProductSize.Width}" ValueChanged="Calculation"/>
+                            <TextBlock Text="X" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                            <xceed:IntegerUpDown Value="{Binding ProductSize.Height}" ValueChanged="Calculation"/>
+                            <Button x:Name="ProductSizeParametrButton" Style="{DynamicResource IconButtonStyle}" Content="/Pict/Buttons/Settings.png" ToolTip="Дополнительные параметры размера" Click="ProductSizeParametrButton_Click" Tag="{Binding}"/>
+                            <ToggleButton Style="{DynamicResource IconToggleButtonStyle}" IsChecked="{Binding IsProductCatalog, Mode=TwoWay}" Checked="Calculation" Unchecked="Calculation" Content="/Pict/Buttons/Catalog.png" ToolTip="Изделие является брошюрой (каталогом)" Height="{Binding ElementName=ProductSizeParametrButton, Path=ActualHeight}" Margin="5,0,0,0"/>
+                            <Border Margin="10,0,0,0" Visibility="{Binding IsProductCatalog, Converter={local:BooleanToVisibleConverter}}" Padding="2" BorderBrush="{DynamicResource BorderDarkColor}" BorderThickness="{DynamicResource BorderThickness}" CornerRadius="{DynamicResource BorderCornerRadiusMini}">
+                                <StackPanel Orientation="Horizontal">
+                                    <RadioButton Style="{DynamicResource IconRadioButtonStyle}" IsChecked="{Binding IsShortFoldSide, Converter={local:BooleanNotConverter}, Mode=OneWay}" Checked="Calculation" Content="/Pict/Buttons/CatalogRight.png" ToolTip="Сгиб по длинной стороне" />
+                                    <RadioButton Style="{DynamicResource IconRadioButtonStyle}" IsChecked="{Binding IsShortFoldSide, Mode=TwoWay}" Content="/Pict/Buttons/CatalogLeft.png" Checked="Calculation" ToolTip="Сгиб по короткой стороне" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                        <TextBlock FontSize="11" Margin="0,3,0,0">Вылеты: лево/право - <Run Text="{Binding ProductSize.FieldWidth}"/> мм, верх/низ - <Run Text="{Binding ProductSize.FieldHeight}"/> мм</TextBlock>
+                        <!--#endregion-->
+                        <Border BorderBrush="{DynamicResource BorderDarkColor}" BorderThickness="1" CornerRadius="1" Margin="0,15,0,15"/>
+                        <!--#region Расчет раскладки-->
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock VerticalAlignment="Center" Text="Количество изделий на листе:" Margin="0,0,5,0"/>
+                            <Border Background="{DynamicResource BackgroundDarkColor}" Padding="10,5,10,5" CornerRadius="{DynamicResource BorderCornerRadiusMini}" VerticalAlignment="Center">
+                                <TextBlock Foreground="{DynamicResource TextLightColor}" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Text="{Binding ProductCount}"/>
+                            </Border>
+                            <Button Style="{DynamicResource IconButtonStyle}" x:Name="ProductLayoutButton" Click="ProductLayoutButton_Click" Content="/Pict/Buttons/Computer.png" ToolTip="Посмотреть раскладку" Tag="{Binding}" Margin="5,0,0,0"/>
+                        </StackPanel>
+                        <!--#endregion-->
+                        <!--#region Количество полос-->
+                        <StackPanel Orientation="Horizontal"  Margin="0,10,0,0">
+                            <TextBlock Text="Количество страниц (полос):" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                            <xceed:IntegerUpDown Value="{Binding PageCount, Mode=TwoWay}" Minimum="{Binding PageMinimumCount}" ValueChanged="Calculation"/>
+                            <Border Background="{DynamicResource MessageBoxErrorColor}" Height="25" Width="25" Margin="5,0,0,0" ToolTip="Количество полос не подходит для печати каталогом/брошюрой" Visibility="{Binding IsCatalogPageCountError, Converter={local:BooleanToVisibleConverter}}">
+                                <Border.OpacityMask>
+                                    <ImageBrush ImageSource="/Pict/Buttons/Information.png" Stretch="Uniform"/>
+                                </Border.OpacityMask>
+                            </Border>
+                        </StackPanel>
+                        <!--#endregion-->
+                        <Border BorderBrush="{DynamicResource BorderDarkColor}" BorderThickness="1" CornerRadius="1" Margin="0,15,0,15"/>
+                        <!--#region Выбор бумаги-->
+                        <DockPanel LastChildFill="True">
+                            <Button Style="{DynamicResource IconButtonStyle}" x:Name="SelectPaperButton" Click="SelectPaperButton_Click" Content="/Pict/Buttons/Order.png" ToolTip="Выбрать из каталога" DockPanel.Dock="Right" Tag="{Binding}" Margin="5,0,0,0"/>
+                            <TextBox IsReadOnly="True" Text="{Binding PaperItem.Name}"/>
+                        </DockPanel>
+                        <TextBlock FontSize="10">Себестоимость: <Run Text="{Binding PaperItem.CostPrice, ConverterCulture=ru-RU, StringFormat=C}"/></TextBlock>
+                        <!--#endregion-->
+                        <Border BorderBrush="{DynamicResource BorderDarkColor}" BorderThickness="1" CornerRadius="1" Margin="0,15,0,15"/>
+                        <!--#region Выбор типа печати-->
+                        <DockPanel LastChildFill="True">
+                            <Button Style="{DynamicResource IconButtonStyle}" x:Name="SelectPrintButton" Click="SelectPrintButton_Click" Content="/Pict/Buttons/Order.png" ToolTip="Выбрать из каталога" Tag="{Binding}" DockPanel.Dock="Right"  Margin="5,0,0,0" />
+                            <TextBox IsReadOnly="True" Text="{Binding PrintItem.Name}"/>
+                        </DockPanel>
+                        <TextBlock FontSize="10">Себестоимость: <Run Text="{Binding PrintItem.CostPrice, ConverterCulture=ru-RU, StringFormat=C}"/></TextBlock>
+                        <!--#endregion-->
+                        <Border BorderBrush="{DynamicResource BorderDarkColor}" BorderThickness="1" CornerRadius="1" Margin="0,15,0,15"/>
+                        <!--#region Выбор типа резки-->
+                        <DockPanel LastChildFill="True">
+                            <Button Style="{DynamicResource IconButtonStyle}" x:Name="SelectCutButton" Click="SelectCutButton_Click" Content="/Pict/Buttons/Order.png" ToolTip="Выбрать из каталога" DockPanel.Dock="Right" Tag="{Binding}" Margin="5,0,0,0"/>
+                            <TextBox IsReadOnly="True" Text="{Binding CutItem.Name }"/>
+                        </DockPanel>
+                        <TextBlock FontSize="10">Себестоимость: <Run Text="{Binding CutItem.CostPrice, ConverterCulture=ru-RU, StringFormat=C}"/></TextBlock>
+                        <!--#endregion-->
+                        <Border BorderBrush="{DynamicResource BorderDarkColor}" BorderThickness="1" CornerRadius="1" Margin="0,15,0,15"/>
+                        <!--#region Доп обработка-->
+                        <ItemsControl ItemsSource="{Binding OtherOrderActionList}" Margin="0,5,0,5">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type dclass:OtherStandartOrderActionItem}">
+                                    <StackPanel Margin="0,5,0,0">
+                                        <DockPanel LastChildFill="True">
+                                            <StackPanel DockPanel.Dock="Right"  Margin="5,0,0,0" Orientation="Horizontal">
+                                                <xceed:DoubleUpDown Value="{Binding CountInProduct}" ValueChanged="Calculation" Minimum="0"/>
+                                                <Button Style="{DynamicResource IconButtonStyle}" x:Name="SelectOthetCatalogItemButton" Click="SelectOthetCatalogItemButton_Click" Content="/Pict/Buttons/Order.png" ToolTip="Выбрать из каталога" Tag="{Binding}"/>
+                                                <Button Style="{DynamicResource IconButtonStyle}" x:Name="СalculationOthetCatalogItemButton" Click="СalculationOthetCatalogItemButton_Click" Content="/Pict/Buttons/Сalculator.png" ToolTip="Расчитать количество на одно изделие" Tag="{Binding}"/>
+                                                <Button Style="{DynamicResource IconButtonStyle}" x:Name="KillOthetCatalogItemButton" Click="KillOthetCatalogItemButton_Click" Content="/Pict/Buttons/Close.png" ToolTip="Удалить позицию" Tag="{Binding}"/>
+                                            </StackPanel>
+                                            <TextBox IsReadOnly="True" Text="{Binding CatalogItem.Name}"/>
+                                        </DockPanel>
+                                        <TextBlock FontSize="10">Себестоимость: <Run Text="{Binding CatalogItem.CostPrice, ConverterCulture=ru-RU, StringFormat=C}"/></TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <Button Style="{DynamicResource IconButtonStyle}" x:Name="AddDopItemButton" Click="AddDopItemButton_Click" Content="/Pict/Buttons/Plus.png" ToolTip="Добавить дополнительную обработку составной части" DockPanel.Dock="Right" Tag="{Binding}" Margin="5,0,0,0"/>
+                        <!--#endregion-->
+                        <!--#region Себестоимость составной части-->
+                        <TextBlock Foreground="{DynamicResource MessageBoxErrorColor}" Text="Недостаточно параметров для расчета себестоимости!" Visibility="{Binding IsValidCostPrice, Converter={local:BooleanToVisibleConverter}, ConverterParameter=Not}"/>
+                        <StackPanel Orientation="Horizontal" Visibility="{Binding IsValidCostPrice, Converter={local:BooleanToVisibleConverter}}">
+                            <TextBlock VerticalAlignment="Center" Text="Себестоимость составной части (за изделие):" Margin="0,0,5,0"/>
+                            <Border Background="{DynamicResource BackgroundDarkColor}" Padding="10,5,10,5" CornerRadius="{DynamicResource BorderCornerRadiusMini}" VerticalAlignment="Center">
+                                <TextBlock Foreground="{DynamicResource TextLightColor}" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Text="{Binding ProductCostPrice, ConverterCulture=ru-RU, StringFormat=C}"/>
+                            </Border>
+                        </StackPanel>
+                        <!--#endregion-->
+                    </StackPanel>
+                </Expander>
+            </Border>
+        </DataTemplate>
+        <!--#endregion-->
+        <!--#region Отдельная состовная часть-->
+        <DataTemplate DataType="{x:Type dclass:OneCatalogPositionOrderItem}">
+            <Border Background="{DynamicResource BackgroundStandartColor}" Margin="0,0,0,25" Padding="5" CornerRadius="4" PreviewMouseRightButtonDown="OrderItem_PreviewMouseRightButtonDown" Tag="{Binding}">
+                <Expander IsExpanded="True" Header="{Binding ItemHeader, Mode=TwoWay}" Style="{DynamicResource OrderItemExpander}">
+                    <StackPanel Margin="0,5,0,0">
+                        <DockPanel LastChildFill="True">
+                            <StackPanel DockPanel.Dock="Right"  Margin="5,0,0,0" Orientation="Horizontal">
+                                <xceed:DoubleUpDown Value="{Binding CountInProduct}" ValueChanged="Calculation" Minimum="0"/>
+                                <Button Style="{DynamicResource IconButtonStyle}" x:Name="SelectOneCatalogItemButton" Click="SelectOneCatalogItemButton_Click" Content="/Pict/Buttons/Order.png" ToolTip="Выбрать из каталога" Tag="{Binding}"/>
+                                <Button Style="{DynamicResource IconButtonStyle}" x:Name="СalculationOneCatalogItemButton" Click="СalculationOneCatalogItemButton_Click" Content="/Pict/Buttons/Сalculator.png" ToolTip="Расчитать количество на одно изделие" Tag="{Binding}"/>
+                            </StackPanel>
+                            <TextBox IsReadOnly="True" Text="{Binding CatalogItem.Name}"/>
+                        </DockPanel>
+                        <TextBlock FontSize="10">Себестоимость: <Run Text="{Binding CatalogItem.CostPrice, ConverterCulture=ru-RU, StringFormat=C}"/></TextBlock>
+                        <TextBlock Foreground="{DynamicResource MessageBoxErrorColor}" Text="Недостаточно параметров для расчета себестоимости!" Visibility="{Binding IsValidCostPrice, Converter={local:BooleanToVisibleConverter}, ConverterParameter=Not}"/>
+                    </StackPanel>
+                </Expander>
+            </Border>
+        </DataTemplate>
+        <!--#endregion-->
+    </Page.Resources>
+    <Border CornerRadius="4" Background="{DynamicResource BackgroundLightColor}" Padding="6">
+        <Grid x:Name="GlobalGrid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{Binding LeftPanelWidth}"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="{Binding RightPanelWidth}"/>
+            </Grid.ColumnDefinitions>
+            <!--Левая часть окна расчетов-->
+            <GroupBox Margin="0,0,5,0" Header="Состав заказа" Padding="5">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <ScrollViewer Grid.ColumnSpan="3" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding OrderItemList}">
+                            <ItemsControl.ContextMenu>
+                                <ContextMenu x:Name="OrderItemListContextMenu">
+                                    <MenuItem Header="Копировать составную часть" Icon="/Pict/Buttons/Copy.png" Click="OrderItemListContextMenu_ClickItemCopy"/>
+                                    <MenuItem Header="Удалить составную часть" Icon="/Pict/Buttons/Close.png" Click="OrderItemListContextMenu_ClickItemKill"/>
+                                </ContextMenu>
+                            </ItemsControl.ContextMenu>
+                        </ItemsControl>
+                    </ScrollViewer>
+                    <Button x:Name="AddStandardOrderItemButton" Grid.Row="1" Content="Добавить стандартную составную часть" Margin="0,5,2.5,0" Click="AddStandardOrderItemButton_Click"/>
+                    <Button x:Name="AddOneCatalogOrderItemButton" Grid.Row="1" Grid.Column="1" Content="Добавить отдельную составную часть" Margin="2.5,5,0,0" Click="AddOneCatalogOrderItemButton_Click"/>
+                    <Button Width="15" Padding="0" Margin="2,5,0,0" ToolTip="Дополнительные варианты составных частей" Grid.Column="2" Grid.Row="1">
+                        <Path Data="{StaticResource UpArrovGeomertry}" HorizontalAlignment="Center" SnapsToDevicePixels="false" Stroke="{DynamicResource BorderLightColor}" StrokeThickness="2" VerticalAlignment="Center"/>
+                    </Button>
+                </Grid>
+            </GroupBox>
+            <Thumb Grid.Column="1" Margin="5,0,5,0" DragDelta="Thumb_DragDelta" Cursor="SizeWE" Style="{StaticResource GridThumbStyle}"/>
+            <!--Правая часть расчетов-->
+            <GroupBox x:Name="CalculatePanel" Margin="5,0,0,0" Grid.Column="2" Header="Расчет тиража">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock VerticalAlignment="Center" Text="Минимальный тираж:" Margin="0,0,5,0"/>
+                            <Border Background="{DynamicResource BackgroundDarkColor}" Padding="10,5,10,5" CornerRadius="{DynamicResource BorderCornerRadiusMini}" VerticalAlignment="Center">
+                                <TextBlock Foreground="{DynamicResource TextLightColor}" VerticalAlignment="Center" FontSize="16" FontWeight="Bold"><Run Text="{Binding MinPrintCopy}"/> шт.</TextBlock>
+                            </Border>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <TextBlock VerticalAlignment="Center" Text="Стартовая себестоимость:" Margin="0,0,5,0"/>
+                            <Border Background="{DynamicResource BackgroundDarkColor}" Padding="10,5,10,5" CornerRadius="{DynamicResource BorderCornerRadiusMini}" VerticalAlignment="Center">
+                                <TextBlock Foreground="{DynamicResource TextLightColor}" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Text="{Binding MinCostPrice, ConverterCulture=ru-RU, StringFormat=C}"/>
+                            </Border>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <TextBlock VerticalAlignment="Center" Text="Минимальная цена продажи (сигнальник):" Margin="0,0,5,0"/>
+                            <Border Background="{DynamicResource MessageBoxErrorColor}" Padding="10,5,10,5" CornerRadius="{DynamicResource BorderCornerRadiusMini}" VerticalAlignment="Center">
+                                <TextBlock Foreground="{DynamicResource TextLightColor}" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Text="{Binding MinPrice, ConverterCulture=ru-RU, StringFormat=C}"/>
+                            </Border>
+                        </StackPanel>
+                        <Border BorderBrush="{DynamicResource BorderDarkColor}" BorderThickness="1" CornerRadius="1" Margin="0,15,0,15"/>
+                        <TextBlock VerticalAlignment="Center" Text="Расчет тиражей:" FontSize="16" FontWeight="Bold"/>
+                    </StackPanel>
+                    <ScrollViewer Grid.Row="1" Margin="0,5,0,0" VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <ItemsControl ItemsSource="{Binding PrintCopyCountList}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type dclass:PrintCopyCountItem}">
+                                        <StackPanel Orientation="Horizontal"  Margin="0,0,0,10" Background="Transparent" Tag="{Binding}" PreviewMouseRightButtonDown="PrintCopyCountItem_PreviewMouseRightButtonDown">
+                                            <TextBlock VerticalAlignment="Center" Text="Тираж:" FontSize="14" FontWeight="Bold"/>
+                                            <xceed:IntegerUpDown Value="{Binding PrintCopyCount, Mode=TwoWay}" Minimum="{Binding MinPrintCount}" Margin="5,0,0,0"/>
+                                            <StackPanel Margin="10,0,0,0" VerticalAlignment="Center">
+                                                <TextBlock Foreground="{DynamicResource MessageBoxInfoColor}">Цена за тираж: <Run FontWeight="Black" Text="{Binding SalePriceForAll, ConverterCulture=ru-RU, StringFormat=C}"/> (<Run Text="{Binding SalePriceForOne, ConverterCulture=ru-RU, StringFormat=C}"/> за шт.)</TextBlock>
+                                                <TextBlock FontStyle="Italic">Себестоимость: <Run FontWeight="Black" Text="{Binding CostPriceForAll, ConverterCulture=ru-RU, StringFormat=C}"/> (<Run Text="{Binding CostPriceForOne, ConverterCulture=ru-RU, StringFormat=C}"/> за шт.)</TextBlock>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <Button Style="{DynamicResource IconButtonStyle}" x:Name="AddPrintCopyCalculationButton" Click="AddPrintCopyCalculationButton_Click" Content="/Pict/Buttons/Plus.png" ToolTip="Расчитать еще" DockPanel.Dock="Right" Margin="5,0,0,0"/>
+                        </StackPanel>
+                    </ScrollViewer>
+                    <Border BorderBrush="{DynamicResource BorderDarkColor}" BorderThickness="1" CornerRadius="1" Margin="0,10,0,10" Grid.Row="2"/>
+                    <!--Кнопки действий с расчетом-->
+                    <StackPanel Orientation="Horizontal" Grid.Row="3" HorizontalAlignment="Center" Margin="0,0,0,-10">
+                        <Button x:Name="SaveOrderButton" Style="{StaticResource IconButtonStyle}" Click="SaveOrderButton_Click" Height="50" Width="50" Content="/Pict/Buttons/Save.png" ToolTip="Сохранить расчет"/>
+                        <Button x:Name="CopyOrderButton" Style="{StaticResource IconButtonStyle}" Click="CopyOrderButton_Click" Height="50" Width="50" Content="/Pict/Buttons/Copy.png" ToolTip="Копировать расчет"/>
+                    </StackPanel>
+                </Grid>
+            </GroupBox>
+            <!--#region Всплывающие окна-->
+            <Popup Name="OrderItemParameterPopup" StaysOpen="False" AllowsTransparency="True" PlacementTarget="{Binding ElementName=CalculatePanel}" Placement="Center" Height="{Binding ElementName=CalculatePanel, Path=ActualHeight}" Width="{Binding ElementName=CalculatePanel, Path=ActualWidth}" PopupAnimation="Slide">
+                <Frame Name="OrderItemParameterFrame" NavigationUIVisibility="Hidden"/>
+            </Popup>
+            <!--#endregion-->
+        </Grid>
+    </Border>
+</Page>

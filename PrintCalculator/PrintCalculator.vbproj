@@ -269,7 +269,12 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\WPFProjectCore\WPFProjectCore\WPFProjectCore.vbproj">
+      <Project>{50b2b443-621c-4202-9f3b-86aca44d3212}</Project>
+      <Name>WPFProjectCore</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Pict\Buttons\Avatar.png" />
     <Resource Include="Pict\Buttons\Catalog.png" />

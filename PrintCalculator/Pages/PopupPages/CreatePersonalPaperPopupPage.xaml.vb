@@ -20,4 +20,8 @@ Class CreatePersonalPaperPopupPage
         catalogItem.CostPrice = CostPrice.Value
         Windows.Application.Current.Dispatcher.Invoke(Calculation)
     End Sub
+
+    Private Sub Page_Loaded(sender As Object, e As RoutedEventArgs)
+        PaperNameTextBox.Focus()
+    End Sub
 End Class

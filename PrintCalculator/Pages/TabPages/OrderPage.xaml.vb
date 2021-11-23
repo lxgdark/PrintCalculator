@@ -1,6 +1,9 @@
-﻿Imports System.Xml.Serialization
+﻿Imports System.IO
+Imports Microsoft.Win32
+Imports System.Xml.Serialization
 Imports PrintCalculator.DataClasses
 Imports PrintCalculator.Workers
+Imports Xceed.Wpf.Toolkit
 Class OrderPage
     Private MeContext As StandartOrderPage
     Private Delegate Sub CalculationDelegate()
@@ -16,8 +19,8 @@ Class OrderPage
         'Задоем контекст данных
         DataContext = MeContext
         'Если страница уже открыта, то выходим из процедуры
-        If MeContext.IsPageOpen Then Exit Sub
-        MeContext.IsPageOpen = True
+        If MeContext.isPageOpen Then Exit Sub
+        MeContext.isPageOpen = True
         'Подписываемся на изменение коллекции вызывая пересчет заказа
         AddHandler MeContext.OrderItemList.CollectionChanged, AddressOf Calculation
         'Добавляем стартовую составную часть, если это не копия другой страницы
@@ -193,7 +196,7 @@ Class OrderPage
     ''' <param name="e"></param>
     Private Sub SelectOthetCatalogItemButton_Click(sender As Object, e As RoutedEventArgs)
         Dim page As New CatalogItemSelectionPopupPage
-        page.SetParametr(CType(sender.Tag, OtherStandartOrderActionItem).CatalogItem, New CalculationDelegate(AddressOf Calculation))
+        page.SetParametr(sender.Tag.CatalogItem, New CalculationDelegate(AddressOf Calculation), False)
         OrderItemParameterFrame.Content = page
         OrderItemParameterPopup.IsOpen = True
     End Sub
@@ -239,7 +242,7 @@ Class OrderPage
     ''' <param name="e"></param>
     Private Sub SelectOneCatalogItemButton_Click(sender As Object, e As RoutedEventArgs)
         Dim page As New CatalogItemSelectionPopupPage
-        page.SetParametr(CType(sender.Tag, OneCatalogPositionOrderItem).CatalogItem, New CalculationDelegate(AddressOf Calculation))
+        page.SetParametr(sender.Tag.CatalogItem, New CalculationDelegate(AddressOf Calculation), False)
         OrderItemParameterFrame.Content = page
         OrderItemParameterPopup.IsOpen = True
     End Sub
@@ -269,6 +272,64 @@ Class OrderPage
         MeContext.PrintCopyCountList.Remove(sender.Tag)
     End Sub
 #End Region
+#Region "Действия с расчетом"
+    ''' <summary>
+    ''' Сохранение текущего расчета
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Async Sub SaveOrderButton_Click(sender As Object, e As RoutedEventArgs)
+        'Создаем и настраиваем диалог сохранения файла
+        Dim sfd As New SaveFileDialog
+        sfd.Title = "Сохранить расчет"
+        sfd.Filter = "Файл расчета (*.tpc)|*.tpc"
+        'Находм в списке вкладок
+        For Each gpl In My.AppCore.GlobalPagesList
+            If gpl.OrderObject Is Me Then
+                sfd.FileName = gpl.Header
+            End If
+        Next
+        If Not sfd.ShowDialog() Then Exit Sub
+        'Флаг для отслеживания ошибки открытия файла
+        Dim iserror As Boolean = False
+        Try
+            'Переносим сохраняемые данные в соответствующий класс
+            Dim s As New SavedOrderObject
+            For Each oi In MeContext.OrderItemList
+                s.OrderItemList.Add(oi)
+            Next
+            'Сериалезуем сохраняемый класс
+            Dim SavePath As String = sfd.FileName
+            If Not IO.File.Exists(SavePath) Then
+                Directory.CreateDirectory(Path.GetDirectoryName(SavePath))
+            End If
+            Dim writer As New XmlSerializer(s.GetType)
+            Dim file As New StreamWriter(SavePath)
+            writer.Serialize(file, s)
+            file.Close()
+        Catch ex As Exception
+            'Если произошла ошибка, то устанвливаем флаг
+            iserror = True
+        End Try
+        'Если флаг ошибки положительный выдаем соответствующее сообщение
+        If iserror Then Await My.MessageWorker.ShowMessage("При сохранении файла произошла ошибка!",, MessageWorker.GetTopMostErrorOptions)
+    End Sub
+    ''' <summary>
+    ''' Копирование расчета на новую вкладку
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub CopyOrderButton_Click(sender As Object, e As RoutedEventArgs)
+        'Создаем новый объект стандартного расчета
+        Dim newSOP As New StandartOrderPage
+        'Переносим нужные параметры
+        newSOP.SetPropertys(MeContext)
+        'Указываем, что это копия
+        newSOP.IsCopyPage = True
+        'Добавляем в глобальный список страниц новую
+        My.AppCore.GlobalPagesList.Add(New GlobalPageWorker With {.Header = "Новый расчет", .IsStartPage = False, .OrderObject = newSOP})
+    End Sub
+#End Region
     ''' <summary>
     ''' Основная процедура проводящаая расчет заказа
     ''' </summary>
@@ -296,19 +357,16 @@ Class OrderPage
         Next
     End Sub
 
-
-    Private Sub SaveOrderButton_Click(sender As Object, e As RoutedEventArgs)
-
+    Private Sub IntegerUpDown_KeyDown(sender As IntegerUpDown, e As KeyEventArgs)
+        If e.Key = Key.Enter Then
+            sender.Value = OtherFunctions.GetFormulaRezult(sender.Text)
+        End If
     End Sub
 
-    Private Sub CopyOrderButton_Click(sender As Object, e As RoutedEventArgs)
-
-        Dim newSOP As New StandartOrderPage
-        newSOP.SetPropertys(MeContext)
-        newSOP.IsCopyPage = True
-        'Добавляем в глобальный список страниц новую
-        My.AppCore.GlobalPagesList.Add(New GlobalPageWorker With {.Header = "Новый расчет", .IsStartPage = False, .OrderObject = newSOP})
+    Private Sub SetPersonalItem_Click(sender As Object, e As RoutedEventArgs)
+        Dim page As New CreatePersonalCatalogItemPopupPage
+        page.SetParametr(sender.Tag.CatalogItem, New CalculationDelegate(AddressOf Calculation))
+        OrderItemParameterFrame.Content = page
+        OrderItemParameterPopup.IsOpen = True
     End Sub
-
-
 End Class

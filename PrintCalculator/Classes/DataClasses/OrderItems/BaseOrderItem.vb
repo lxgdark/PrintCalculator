@@ -1,4 +1,4 @@
-﻿Imports Microsoft.VisualBasic
+﻿Imports System.Xml.Serialization
 Imports WPFProjectCore
 
 Namespace DataClasses
@@ -24,6 +24,9 @@ Namespace DataClasses
     ''' <summary>
     ''' Базовый класс составной части расчета
     ''' </summary>
+    <XmlInclude(GetType(StandartOrderItem))>
+    <XmlInclude(GetType(OneCatalogPositionOrderItem))>
+    <Serializable>
     Public MustInherit Class BaseOrderItem
         Inherits NotifyProperty_Base(Of BaseOrderItem)
         Implements IBaseOrderItem

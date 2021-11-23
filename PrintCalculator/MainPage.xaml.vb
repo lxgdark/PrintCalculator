@@ -1,4 +1,7 @@
-﻿Imports PrintCalculator.DataClasses
+﻿Imports System.IO
+Imports System.Xml.Serialization
+Imports Microsoft.Win32
+Imports PrintCalculator.DataClasses
 Imports PrintCalculator.Workers
 
 Class MainPage
@@ -43,6 +46,50 @@ Class MainPage
         'My.AppCore.GlobalPagesList.Add(New GlobalPageWorker With {.Header = "Новый расчет по шаблону", .IsStartPage = False, .OrderObject = New OrderPresetPage})
         ''Переходим к последней добавленной странице
         'OrderTabControl.SelectedIndex = My.AppCore.GlobalPagesList.Count - 1
+    End Sub
+
+    ''' <summary>
+    ''' Открывает сохраненный заказ
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Async Sub OpenSavedOrder_Click(sender As Object, e As RoutedEventArgs)
+        'Создаем диалог открытия файла
+        Dim ofd As New OpenFileDialog
+        'Устанваливаем расширения допустимых файлов
+        ofd.Filter = "Файл расчета (*.tpc)|*.tpc"
+        'Заголовок диалога открытия картинки
+        ofd.Title = "Открыть расчет"
+        'Открывать ли предыдущую папку при повторном выборе фона
+        ofd.RestoreDirectory = True
+        'Если файл не выбран, то выходим из процедуры
+        If Not ofd.ShowDialog Then Exit Sub
+        'Флаг для отслеживания ошибки открытия файла
+        Dim iserror As Boolean = False
+        Try
+            'Десириализуем файл
+            Dim reader = New XmlSerializer(GetType(SavedOrderObject))
+            Dim file = New StreamReader(ofd.FileName)
+            Dim result As SavedOrderObject = reader.Deserialize(file)
+            file.Close()
+            'Создаем новый объект стандартного расчета
+            Dim newSOP As New StandartOrderPage
+            'Переносим сохраненные составные части в новый расчет
+            For Each oi In result.OrderItemList
+                newSOP.OrderItemList.Add(oi)
+            Next
+            'Задаем флаг, что это копия
+            newSOP.IsCopyPage = True
+            'Добавляем в глобальный список страниц новую
+            My.AppCore.GlobalPagesList.Add(New GlobalPageWorker With {.Header = IO.Path.GetFileNameWithoutExtension(ofd.FileName), .IsStartPage = False, .OrderObject = newSOP})
+            'Переходим к открытому расчету
+            OrderTabControl.SelectedIndex = My.AppCore.GlobalPagesList.Count - 1
+        Catch ex As Exception
+            'Если произошла ошибка, то устанвливаем флаг
+            iserror = True
+        End Try
+        'Если флаг ошибки положительный выдаем соответствующее сообщение
+        If iserror Then Await My.MessageWorker.ShowMessage("При открытии файла произошла ошибка!",, MessageWorker.GetTopMostErrorOptions)
     End Sub
 #End Region
 #Region "Работа с вкладками (закрытие, смена заголовка)"

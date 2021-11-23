@@ -4,6 +4,7 @@ Class CatalogItemSelectionPopupPage
     Dim CatalogListSource As CollectionViewSource
     Private Calculation As [Delegate]
     Dim catalogItem As CatalogItem
+    Dim IsInsertFilter As Boolean = True
 #Region "Загрузка окна"
     Private Sub Page_Loaded(sender As Object, e As RoutedEventArgs)
         'Устанавливаем фокус в поле посика
@@ -12,8 +13,9 @@ Class CatalogItemSelectionPopupPage
     ''' <summary>
     ''' Установка стартовых параметров
     ''' </summary>
-    ''' <param name="calculationSub"></param>
-    Public Sub SetParametr(_catalogItem As CatalogItem, calculationSub As [Delegate])
+    Public Sub SetParametr(_catalogItem As CatalogItem, calculationSub As [Delegate], Optional isInsertFilterValue As Boolean = True)
+        'Задаем флаг входящей фильтрацйии. Если он True, то каталог дополнительно фильтруется по разделу и тегу
+        IsInsertFilter = isInsertFilterValue
         'Определяем ссылку на список каталога, для фильтрации
         CatalogListSource = TryFindResource("CatalogSource")
         'Сохраняем делегат, который нужно вызвать по завершению
@@ -71,9 +73,11 @@ Class CatalogItemSelectionPopupPage
         If Not (citem Is Nothing) Then
             'Определяем переменную результата фильтрации (да/нет)
             Dim result As Boolean = True
-            'Проверяем соответсвуют ли текущая позиция каталога фильтрации по категории
-            result = result AndAlso citem.ItemCategory = ItemCategory Or (ItemCategory = CatalogItem.ItemCategoryEnum.NONE)
-            result = result AndAlso citem.ItemTag = ItemTag Or (ItemTag = "")
+            If IsInsertFilter Then
+                'Проверяем соответсвуют ли текущая позиция каталога фильтрации по категории и тегу
+                result = result AndAlso citem.ItemCategory = ItemCategory Or (ItemCategory = CatalogItem.ItemCategoryEnum.NONE)
+                result = result AndAlso citem.ItemTag = ItemTag Or (ItemTag = "")
+            End If
             'Разбиваем строку поиска на слова
             Dim strmass() As String = FindTextBox.Text.ToLower.Split(" ".ToCharArray, StringSplitOptions.RemoveEmptyEntries)
             'Проходим по массиву слов и проверяем удовлетворяет ли поиск данным словам

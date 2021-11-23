@@ -104,11 +104,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Classes\DataClasses\OrderItems\SingleOrderPosition.vb" />
+    <Compile Include="Classes\DataClasses\SavedOrderObject.vb" />
+    <Compile Include="Classes\OtherFunctions.vb" />
     <Compile Include="MainPage.xaml.vb">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\PopupPages\CatalogItemSelectionPopupPage.xaml.vb">
       <DependentUpon>CatalogItemSelectionPopupPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\PopupPages\CreatePersonalCatalogItemPopupPage.xaml.vb">
+      <DependentUpon>CreatePersonalCatalogItemPopupPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\PopupPages\CreatePersonalPaperPopupPage.xaml.vb">
       <DependentUpon>CreatePersonalPaperPopupPage.xaml</DependentUpon>
@@ -177,6 +183,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Pages\PopupPages\CatalogItemSelectionPopupPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\PopupPages\CreatePersonalCatalogItemPopupPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

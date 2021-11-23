@@ -132,9 +132,13 @@ Namespace DataClasses
             ''' </summary>
             MATERIAL = 1
             ''' <summary>
-            ''' Услуга печати
+            ''' Стандартная услуга
             ''' </summary>
             SERVICE = 2
+            ''' <summary>
+            ''' Расширенная услуга
+            ''' </summary>
+            PROSERVICE = 3
         End Enum
 #End Region
     End Class

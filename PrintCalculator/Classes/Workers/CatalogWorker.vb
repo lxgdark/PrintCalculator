@@ -106,6 +106,9 @@ Namespace Workers
                 ElseIf str(1) = "SERVICE" Then
                     '... и его основной раздел услуга, то сразу вохвращаем соответствующее значение
                     Return CatalogItem.ItemCategoryEnum.SERVICE
+                ElseIf str(1) = "PROSERVICE" Then
+                    '... и его основной раздел услуга, то сразу вохвращаем соответствующее значение
+                    Return CatalogItem.ItemCategoryEnum.PROSERVICE
                 End If
             End If
             'Если код был не верным или неопределен, возврачаем заглушку

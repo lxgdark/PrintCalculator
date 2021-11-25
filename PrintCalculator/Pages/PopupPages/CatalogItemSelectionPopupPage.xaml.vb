@@ -83,7 +83,7 @@ Class CatalogItemSelectionPopupPage
             'Проходим по массиву слов и проверяем удовлетворяет ли поиск данным словам
             For Each x In strmass
                 'Суммируем резултат
-                result = result AndAlso citem.Name.ToLower.IndexOf(x) > -1
+                result = result AndAlso citem.Name.ToLower.IndexOf(x) > -1 Or citem.GroupCode.ToLower.IndexOf(x) > -1
             Next
             'Возвращаем результат
             e.Accepted = result
@@ -135,6 +135,10 @@ Class CatalogItemSelectionPopupPage
             'Вызываем переданную процедуру завершения
             Windows.Application.Current.Dispatcher.Invoke(Calculation)
         End If
+    End Sub
+
+    Private Sub CatalogListBox_MouseRightButtonUp(sender As Object, e As MouseButtonEventArgs)
+
     End Sub
 #End Region
 

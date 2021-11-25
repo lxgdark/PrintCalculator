@@ -28,7 +28,7 @@
             <Button x:Name="ClearFindTextButton" Style="{StaticResource IconButtonStyle}" Grid.Column="1" Click="ClearFindTextButton_Click" Content="/Pict/Buttons/Close.png" ToolTip="Очистить поле поиска"/>
             <!--#endregion-->
             <!--#region Каталог-->
-            <ListBox x:Name="CatalogListBox" Style="{StaticResource GroupedListBox}" VirtualizingPanel.IsVirtualizingWhenGrouping="True" ItemContainerStyle="{DynamicResource SelectableListBoxItem}" Margin="0,10,0,0" Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding Source={StaticResource CatalogSource}}" MouseDoubleClick="CatalogListBox_MouseDoubleClick">
+            <ListBox x:Name="CatalogListBox" Style="{StaticResource GroupedListBox}" VirtualizingPanel.IsVirtualizingWhenGrouping="True" ItemContainerStyle="{DynamicResource SelectableListBoxItem}" Margin="0,10,0,0" Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding Source={StaticResource CatalogSource}}" MouseDoubleClick="CatalogListBox_MouseDoubleClick" MouseRightButtonUp="CatalogListBox_MouseRightButtonUp">
                 <ListBox.GroupStyle>
                     <GroupStyle>
                         <GroupStyle.ContainerStyle>
@@ -54,7 +54,14 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type dclass:CatalogItem}">
                         <StackPanel>
-                            <TextBlock Text="{Binding Name}" ToolTip="{Binding Comment}"/>
+                            <TextBlock Text="{Binding Name}">
+                                <TextBlock.ToolTip>
+                                    <StackPanel>
+                                        <TextBlock>Себестоимость: <Run Text="{Binding CostPrice, StringFormat=C, ConverterCulture=ru-RU}"/></TextBlock>
+                                        <TextBlock Visibility="{Binding Comment.Length, Converter={local:NullCountToVisibleConverter}}">Описание: <Run Text="{Binding Comment}"/></TextBlock>
+                                    </StackPanel>
+                                </TextBlock.ToolTip>
+                            </TextBlock>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

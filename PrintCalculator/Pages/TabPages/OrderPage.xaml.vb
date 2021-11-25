@@ -185,9 +185,10 @@ Class OrderPage
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     Private Sub AddDopItemButton_Click(sender As Object, e As RoutedEventArgs)
-        Dim osoa As New OtherStandartOrderActionItem
-        CType(sender.Tag, StandartOrderItem).OtherOrderActionList.Add(osoa)
-        SelectOthetCatalogItemButton_Click(New Button With {.Tag = osoa}, Nothing)
+        Dim sop As New SingleOrderPosition
+        CType(sender.Tag, StandartOrderItem).OtherOrderActionList.Add(sop)
+        Calculation()
+        SelectOthetCatalogItemButton_Click(New Button With {.Tag = sop}, Nothing)
     End Sub
     ''' <summary>
     ''' Выбор доп. позиции в каталоге
@@ -196,7 +197,7 @@ Class OrderPage
     ''' <param name="e"></param>
     Private Sub SelectOthetCatalogItemButton_Click(sender As Object, e As RoutedEventArgs)
         Dim page As New CatalogItemSelectionPopupPage
-        page.SetParametr(sender.Tag.CatalogItem, New CalculationDelegate(AddressOf Calculation), False)
+        page.SetParametr(sender.Tag.BasicCatalogItem, New CalculationDelegate(AddressOf Calculation), False)
         OrderItemParameterFrame.Content = page
         OrderItemParameterPopup.IsOpen = True
     End Sub
@@ -364,9 +365,13 @@ Class OrderPage
     End Sub
 
     Private Sub SetPersonalItem_Click(sender As Object, e As RoutedEventArgs)
-        Dim page As New CreatePersonalCatalogItemPopupPage
-        page.SetParametr(sender.Tag.CatalogItem, New CalculationDelegate(AddressOf Calculation))
-        OrderItemParameterFrame.Content = page
-        OrderItemParameterPopup.IsOpen = True
+        'Dim page As New CreatePersonalCatalogItemPopupPage
+        'page.SetParametr(sender.Tag.CatalogItem, New CalculationDelegate(AddressOf Calculation))
+        'OrderItemParameterFrame.Content = page
+        'OrderItemParameterPopup.IsOpen = True
+    End Sub
+
+    Private Sub AddPersonalItem_Click(sender As Object, e As RoutedEventArgs)
+
     End Sub
 End Class

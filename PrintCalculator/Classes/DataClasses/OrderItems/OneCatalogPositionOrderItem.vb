@@ -1,5 +1,4 @@
 ﻿Imports System.Collections.ObjectModel
-Imports Microsoft.VisualBasic
 Imports WPFProjectCore
 
 Namespace DataClasses

@@ -194,7 +194,7 @@ Namespace DataClasses
         ''' Список прочих действий с сотавной частью
         ''' </summary>
         ''' <returns></returns>
-        Public Property OtherOrderActionList As New ObservableCollection(Of OtherStandartOrderActionItem)
+        Public Property OtherOrderActionList As New ObservableCollection(Of SingleOrderPosition)
         ''' <summary>
         ''' Загаловок составной части
         ''' </summary>
@@ -252,6 +252,9 @@ Namespace DataClasses
             End If
             'Корректируем флаг валидности последующих расчетов
             IsValidCostPrice = IsValidCostPrice And Not IsCatalogPageCountError
+            For Each sop In OtherOrderActionList
+                IsValidCostPrice = IsValidCostPrice And sop.GetValideCalculation
+            Next
             'Если все задлано, продолжаем расчет
             If IsValidCostPrice Then
                 Dim sheetSize = GetSheetSize(PaperItem.Unit)
@@ -262,15 +265,15 @@ Namespace DataClasses
                 'Высчитываем себестоимость составной части
                 '
                 'Себестоимость бумаги высчитали ранее
-                'Себестоимость печати задана в прайсе
+                'Себестоимость печати вычисляется в зависимости от принтера
                 'Себестоимость резки за изделие, поэтому умножаем на число изделий на листе
                 'Умножаем результат на число изделий и делим на 2, если печать двусторонняя
                 'Если печать каталогом делим еще на 2
                 '
-                ProductCostPrice = (paperCostPrice + PrintItem.CostPrice + CutItem.CostPrice * ProductCount) / ProductCount * PageCount / IIf(PrintItem.Name.EndsWith("4") Or PrintItem.Name.EndsWith("1"), 2, 1) / IIf(IsProductCatalog, 2, 1)
+                ProductCostPrice = (paperCostPrice + GetPrintCostPrice() + CutItem.CostPrice * ProductCount) / ProductCount * PageCount / IIf(PrintItem.Name.EndsWith("4") Or PrintItem.Name.EndsWith("1"), 2, 1) / IIf(IsProductCatalog, 2, 1)
                 'Проходим по списку дополнительных обработок и добавляем к себестоимости позиции их себестоимость
-                For Each ooal In OtherOrderActionList
-                    ProductCostPrice += ooal.GetCostPrice
+                For Each sop In OtherOrderActionList
+                    ProductCostPrice += sop.GetCostPrice
                 Next
             Else
                 'Если не все задано, то возвращаем себестоимость в 0
@@ -315,6 +318,18 @@ Namespace DataClasses
                 PageMinimumCount = 1
             End If
         End Sub
+        ''' <summary>
+        ''' Вычисляет себестоимость для разных видов печати
+        ''' </summary>
+        ''' <returns></returns>
+        Private Function GetPrintCostPrice() As Double
+            'Если единица измерения задана в квадратных метрах, то себестоимость высчитывается за площадь печатной области
+            If PrintItem.Unit = "м2" Then
+                Return (PrintPaperSize.Height + PrintPaperSize.FieldHeight) / 1000 * ((PrintPaperSize.Width + PrintPaperSize.FieldWidth) / 1000) * PrintItem.CostPrice
+            Else
+                Return PrintItem.CostPrice
+            End If
+        End Function
 #End Region
         ''' <summary>
         ''' Запускаем вычисления себестоимости и количества продукции на листе
@@ -333,9 +348,9 @@ Namespace DataClasses
             MyBase.SetPropertys(input, "Collection")
             'Далее вручную переносим значения коллекции доп. действий в новый класс
             For Each oal In CType(input, StandartOrderItem).OtherOrderActionList
-                Dim osoa As New OtherStandartOrderActionItem
-                osoa.SetPropertys(oal)
-                Me.OtherOrderActionList.Add(osoa)
+                Dim sop As New SingleOrderPosition
+                sop.SetPropertys(oal)
+                Me.OtherOrderActionList.Add(sop)
             Next
         End Sub
 #End Region

@@ -28,7 +28,7 @@
             <Button x:Name="ClearFindTextButton" Style="{StaticResource IconButtonStyle}" Grid.Column="1" Click="ClearFindTextButton_Click" Content="/Pict/Buttons/Close.png" ToolTip="Очистить поле поиска"/>
             <!--#endregion-->
             <!--#region Каталог-->
-            <ListBox x:Name="CatalogListBox" Style="{StaticResource GroupedListBox}" VirtualizingPanel.IsVirtualizingWhenGrouping="True" ItemContainerStyle="{DynamicResource SelectableListBoxItem}" Margin="0,10,0,0" Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding Source={StaticResource CatalogSource}}" MouseDoubleClick="CatalogListBox_MouseDoubleClick" MouseRightButtonUp="CatalogListBox_MouseRightButtonUp">
+            <ListBox x:Name="CatalogListBox" Style="{StaticResource GroupedListBox}" VirtualizingPanel.IsVirtualizingWhenGrouping="True" ItemContainerStyle="{DynamicResource SelectableListBoxItem}" Margin="0,10,0,0" Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding Source={StaticResource CatalogSource}}" MouseDoubleClick="CatalogListBox_MouseDoubleClick">
                 <ListBox.GroupStyle>
                     <GroupStyle>
                         <GroupStyle.ContainerStyle>
@@ -65,9 +65,14 @@
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
+                <ListBox.ContextMenu>
+                    <ContextMenu x:Name="OrderItemListContextMenu">
+                        <MenuItem Header="Добавить в избранное" Icon="/Pict/Buttons/Smyle.png" Click="CatalogListBoxContextMenu_AddFavorite"/>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
             </ListBox>
             <!--#endregion-->
-            <Button Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" Content="Выбрать" Margin="0,10,0,0" x:Name="SelectPaperButton" Click="SelectPaperButton_Click"/>
+            <Button Grid.Row="2" IsDefault="True" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" Content="Выбрать" Margin="0,10,0,0" x:Name="SelectPaperButton" Click="SelectPaperButton_Click"/>
         </Grid>
     </Grid>
 </Page>

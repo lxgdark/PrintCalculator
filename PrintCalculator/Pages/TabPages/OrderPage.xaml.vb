@@ -189,6 +189,7 @@ Class OrderPage
         CType(sender.Tag, StandartOrderItem).OtherOrderActionList.Add(sop)
         Calculation()
         SelectOthetCatalogItemButton_Click(New Button With {.Tag = sop}, Nothing)
+        OrderItemsScrollViewer.ScrollToEnd()
     End Sub
     ''' <summary>
     ''' Выбор доп. позиции в каталоге
@@ -235,6 +236,7 @@ Class OrderPage
         SelectOneCatalogItemButton_Click(New Button With {.Tag = ocpoi}, Nothing)
         ''Вызываем стартовый просчет внутри составной части
         ocpoi.Calculation()
+        OrderItemsScrollViewer.ScrollToEnd()
     End Sub
     ''' <summary>
     ''' Поисходит приажаааааааакопки выбора позиции из каталога
@@ -243,7 +245,7 @@ Class OrderPage
     ''' <param name="e"></param>
     Private Sub SelectOneCatalogItemButton_Click(sender As Object, e As RoutedEventArgs)
         Dim page As New CatalogItemSelectionPopupPage
-        page.SetParametr(sender.Tag.CatalogItem, New CalculationDelegate(AddressOf Calculation), False)
+        page.SetParametr(sender.Tag.BasicCatalogItem, New CalculationDelegate(AddressOf Calculation), False)
         OrderItemParameterFrame.Content = page
         OrderItemParameterPopup.IsOpen = True
     End Sub
@@ -365,13 +367,18 @@ Class OrderPage
     End Sub
 
     Private Sub SetPersonalItem_Click(sender As Object, e As RoutedEventArgs)
-        'Dim page As New CreatePersonalCatalogItemPopupPage
-        'page.SetParametr(sender.Tag.CatalogItem, New CalculationDelegate(AddressOf Calculation))
-        'OrderItemParameterFrame.Content = page
-        'OrderItemParameterPopup.IsOpen = True
+        Dim page As New CreatePersonalCatalogItemPopupPage
+        page.SetParametr(sender.Tag.BasicCatalogItem, New CalculationDelegate(AddressOf Calculation))
+        OrderItemParameterFrame.Content = page
+        OrderItemParameterPopup.IsOpen = True
     End Sub
 
     Private Sub AddPersonalItem_Click(sender As Object, e As RoutedEventArgs)
-
+        Dim sop As New SingleOrderPosition
+        sop.IsPersonalItem = True
+        CType(sender.Tag, StandartOrderItem).OtherOrderActionList.Add(sop)
+        Calculation()
+        SetPersonalItem_Click(New Button With {.Tag = sop}, Nothing)
+        OrderItemsScrollViewer.ScrollToEnd()
     End Sub
 End Class

@@ -176,7 +176,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <ScrollViewer Grid.ColumnSpan="3" VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer x:Name="OrderItemsScrollViewer" Grid.ColumnSpan="3" VerticalScrollBarVisibility="Auto">
                         <ItemsControl ItemsSource="{Binding OrderItemList}">
                             <ItemsControl.ContextMenu>
                                 <ContextMenu x:Name="OrderItemListContextMenu">
@@ -190,7 +190,7 @@
                         <TextBlock Text="Добавить стандартную составную часть" TextWrapping="Wrap"/>
                     </Button>
                     <Button x:Name="AddOneCatalogOrderItemButton" Grid.Row="1" Grid.Column="1" Margin="2.5,5,0,0" Click="AddOneCatalogOrderItemButton_Click">
-                        <TextBlock Text="Добавить отдельную составную часть" TextWrapping="Wrap"/>
+                        <TextBlock Text="Добавить отдельную составную часть" TextWrapping="Wrap" TextAlignment="Center"/>
                     </Button>
                     <Button Width="15" Padding="0" Margin="2,5,0,0" ToolTip="Дополнительные варианты составных частей" Grid.Column="2" Grid.Row="1">
                         <Path Data="{StaticResource UpArrovGeomertry}" HorizontalAlignment="Center" SnapsToDevicePixels="false" Stroke="{DynamicResource BorderLightColor}" StrokeThickness="2" VerticalAlignment="Center"/>

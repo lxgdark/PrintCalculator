@@ -19,13 +19,12 @@ Namespace DataClasses
         ''' <param name="printCopyCount"></param>
         ''' <param name="costPriceForOne"></param>
         ''' <returns>
-        ''' % наценки = 200 - сумма себестоимости/200 (если результат меньше 40, то ставим 40)
-        ''' При себестоимости меньше 1000 р., добавляется 300 р. к сумме на приладку и затраты времени оменеджера
+        ''' % наценки = 150 - сумма себестоимости/150 (если результат меньше 40, то ставим 40)
         ''' </returns>
         Public Function GetCalculationSumm(printCopyCount As Integer, costPriceForOne As Double) As Double Implements ICalculationFormula.GetCalculationSumm
             Dim result As Double = 0
             Dim costPriceForAll As Double = printCopyCount * costPriceForOne
-            Dim percent As Double = 200 - costPriceForAll / 200
+            Dim percent As Double = 150 - costPriceForAll / 150
             If percent < 40 Then percent = 40
             result = costPriceForAll + costPriceForAll / 100 * percent
             Return result

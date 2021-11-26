@@ -15,6 +15,7 @@ Class CreatePersonalPaperPopupPage
     End Sub
 
     Private Sub CloseParametrButton_Click(sender As Object, e As RoutedEventArgs)
+        If PaperNameTextBox.Text = "" Or CostPrice.Value <= 0 Then Exit Sub
         catalogItem.Name = PaperNameTextBox.Text
         catalogItem.Unit = "L" & WidthPaperSize.Value & "x" & HeightPaperSize.Value
         catalogItem.CostPrice = CostPrice.Value

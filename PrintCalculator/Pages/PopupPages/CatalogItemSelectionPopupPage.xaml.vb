@@ -137,7 +137,7 @@ Class CatalogItemSelectionPopupPage
         End If
     End Sub
 
-    Private Sub CatalogListBox_MouseRightButtonUp(sender As Object, e As MouseButtonEventArgs)
+    Private Sub CatalogListBoxContextMenu_AddFavorite(sender As Object, e As MouseButtonEventArgs)
 
     End Sub
 #End Region

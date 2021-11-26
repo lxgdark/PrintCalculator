@@ -15,6 +15,9 @@ Class CreatePersonalCatalogItemPopupPage
     End Sub
 
     Private Sub CloseParametrButton_Click(sender As Object, e As RoutedEventArgs)
-
+        If CatalogItemNameTextBox.Text = "" Or CostPrice.Value <= 0 Then Exit Sub
+        catalogItem.Name = CatalogItemNameTextBox.Text
+        catalogItem.CostPrice = CostPrice.Value
+        Windows.Application.Current.Dispatcher.Invoke(Calculation)
     End Sub
 End Class

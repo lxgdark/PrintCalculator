@@ -146,8 +146,8 @@ Namespace DataClasses
             Dim result As IBaseOrderItem
             If typeName = "StandartOrderItem" Then
                 result = New StandartOrderItem
-            ElseIf typeName = "OneCatalogPositionOrderItem" Then
-                result = New OneCatalogPositionOrderItem
+            ElseIf typeName = "SingleOrderItem" Then
+                result = New SingleOrderItem
             Else
                 result = New StandartOrderItem
             End If

@@ -135,10 +135,6 @@ Namespace DataClasses
             ''' Стандартная услуга
             ''' </summary>
             SERVICE = 2
-            ''' <summary>
-            ''' Расширенная услуга
-            ''' </summary>
-            PROSERVICE = 3
         End Enum
 #End Region
     End Class

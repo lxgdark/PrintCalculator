@@ -91,35 +91,25 @@
                         <Border BorderBrush="{DynamicResource BorderDarkColor}" BorderThickness="1" CornerRadius="1" Margin="0,15,0,10"/>
                         <!--#region Доп обработка-->
                         <TextBlock Text="Список доп. обработак и материалов:" Margin="0,0,0,5" HorizontalAlignment="Center"/>
-                        <ItemsControl ItemsSource="{Binding OtherOrderActionList}">
+                        <ItemsControl ItemsSource="{Binding OtherOrderPositionList}">
                             <ItemsControl.ItemTemplate>
-                                <DataTemplate DataType="{x:Type dclass:SingleOrderPosition}">
+                                <DataTemplate DataType="{x:Type dclass:SinglePositionInOrder}">
                                     <StackPanel Margin="0,5,0,0">
                                         <DockPanel LastChildFill="True">
                                             <StackPanel DockPanel.Dock="Right"  Margin="5,0,0,0" Orientation="Horizontal">
                                                 <xceed:DoubleUpDown Value="{Binding Count}" ValueChanged="Calculation" Minimum="0"/>
-                                                <Button Style="{DynamicResource IconButtonStyle}" Visibility="{Binding IsPersonalItem, Converter={local:BooleanToVisibleConverter}}" x:Name="SetPersonalItem" Click="SetPersonalItem_Click" Content="/Pict/Buttons/Edit.png" ToolTip="Задать доп.часть вручную" Tag="{Binding}" Margin="5,0,0,0"/>
+                                                <Button Style="{DynamicResource IconButtonStyle}" Visibility="{Binding IsPersonalItem, Converter={local:BooleanToVisibleConverter}}" x:Name="SetPersonalItem" Content="/Pict/Buttons/Edit.png" ToolTip="Задать доп.часть вручную" Tag="{Binding}" Margin="5,0,0,0"/>
                                                 <Button Style="{DynamicResource IconButtonStyle}" Visibility="{Binding IsPersonalItem, Converter={local:BooleanToVisibleConverter}, ConverterParameter=Not}" x:Name="SelectOthetCatalogItemButton" Click="SelectOthetCatalogItemButton_Click" Content="/Pict/Buttons/Order.png" ToolTip="Выбрать из каталога" Tag="{Binding}"/>
                                                 <Button Style="{DynamicResource IconButtonStyle}" x:Name="KillOthetCatalogItemButton" Click="KillOthetCatalogItemButton_Click" Content="/Pict/Buttons/Close.png" ToolTip="Удалить позицию" Tag="{Binding}"/>
                                             </StackPanel>
                                             <TextBox IsReadOnly="True" Text="{Binding BasicCatalogItem.Name}"/>
-                                        </DockPanel>
-                                        <TextBlock Text="Сопутсвующий материал:" FontSize="12" Margin="5,10,0,5" Visibility="{Binding IsProService, Converter={local:BooleanToVisibleConverter}}"/>
-                                        <DockPanel LastChildFill="True" Visibility="{Binding IsProService, Converter={local:BooleanToVisibleConverter}}">
-                                            <StackPanel DockPanel.Dock="Right"  Margin="5,0,0,0" Orientation="Horizontal">
-                                                <Button Style="{DynamicResource IconButtonStyle}" x:Name="СalculationOthetCatalogItemButton" Click="СalculationOthetCatalogItemButton_Click" Content="/Pict/Buttons/Сalculator.png" ToolTip="Расчитать параметры услуги" Tag="{Binding}"/>
-                                            </StackPanel>
-                                            <TextBox IsReadOnly="True" Text="{Binding MaterialCatalogItem.Name}"/>
                                         </DockPanel>
                                         <Border BorderBrush="{DynamicResource BorderDarkColor}" BorderThickness="1" CornerRadius="1" Margin="0,15,0,15"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
-                            <Button Style="{DynamicResource IconButtonStyle}" x:Name="AddDopItemButton" Click="AddDopItemButton_Click" Content="/Pict/Buttons/Plus.png" ToolTip="Добавить дополнительную обработку составной части" Tag="{Binding}"/>
-                            <Button Style="{DynamicResource IconButtonStyle}" x:Name="AddPersonalItem" Click="AddPersonalItem_Click" Content="/Pict/Buttons/Edit.png" ToolTip="Задать доп.часть вручную" Tag="{Binding}" Margin="5,0,0,0"/>
-                        </StackPanel>
+                        <Button Style="{DynamicResource IconButtonStyle}" x:Name="AddDopItemButton" Click="AddDopItemButton_Click" Content="/Pict/Buttons/Plus.png" ToolTip="Добавить дополнительную обработку составной части" Tag="{Binding}" HorizontalAlignment="Center" Margin="0,0,0,10"/>
                         <!--#endregion-->
                         <!--#region Себестоимость составной части-->
                         <TextBlock Foreground="{DynamicResource MessageBoxErrorColor}" Text="Недостаточно параметров для расчета себестоимости!" Visibility="{Binding IsValidCostPrice, Converter={local:BooleanToVisibleConverter}, ConverterParameter=Not}"/>
@@ -136,21 +126,21 @@
         </DataTemplate>
         <!--#endregion-->
         <!--#region Отдельная состовная часть-->
-        <DataTemplate DataType="{x:Type dclass:OneCatalogPositionOrderItem}">
+        <DataTemplate DataType="{x:Type dclass:SingleOrderItem}">
             <Border Background="{DynamicResource BackgroundStandartColor}" Margin="0,0,0,25" Padding="5" CornerRadius="4" PreviewMouseRightButtonDown="OrderItem_PreviewMouseRightButtonDown" Tag="{Binding}">
                 <Expander IsExpanded="True" Header="{Binding ItemHeader, Mode=TwoWay}" Style="{DynamicResource OrderItemExpander}">
                     <StackPanel Margin="0,5,0,0">
                         <DockPanel LastChildFill="True">
                             <StackPanel DockPanel.Dock="Right"  Margin="5,0,0,0" Orientation="Horizontal">
                                 <xceed:DoubleUpDown Value="{Binding CountInProduct}" ValueChanged="Calculation" Minimum="0"/>
-                                <Button Style="{DynamicResource IconButtonStyle}" x:Name="SetPersonalItem" Click="SetPersonalItem_Click" Content="/Pict/Buttons/Edit.png" ToolTip="Задать доп.часть вручную" Tag="{Binding}" Margin="5,0,0,0"/>
+                                <Button Style="{DynamicResource IconButtonStyle}" x:Name="SetPersonalItem" Content="/Pict/Buttons/Edit.png" ToolTip="Задать доп.часть вручную" Tag="{Binding}" Margin="5,0,0,0"/>
                                 <Button Style="{DynamicResource IconButtonStyle}" x:Name="SelectOneCatalogItemButton" Click="SelectOneCatalogItemButton_Click" Content="/Pict/Buttons/Order.png" ToolTip="Выбрать из каталога" Tag="{Binding}"/>
                                 <Button Style="{DynamicResource IconButtonStyle}" x:Name="СalculationOneCatalogItemButton" Click="СalculationOneCatalogItemButton_Click" Content="/Pict/Buttons/Сalculator.png" ToolTip="Расчитать количество на одно изделие" Tag="{Binding}"/>
                             </StackPanel>
-                            <TextBox IsReadOnly="True" Text="{Binding CatalogItem.Name}"/>
+                            <TextBox IsReadOnly="True" Text="{Binding Item.BasicCatalogItem.Name}"/>
                         </DockPanel>
-                        <TextBlock FontSize="10">Себестоимость: <Run Text="{Binding CatalogItem.CostPrice, ConverterCulture=ru-RU, StringFormat=C}"/></TextBlock>
-                        <TextBlock Foreground="{DynamicResource MessageBoxErrorColor}" Text="Недостаточно параметров для расчета себестоимости!" Visibility="{Binding IsValidCostPrice, Converter={local:BooleanToVisibleConverter}, ConverterParameter=Not}"/>
+                        <TextBlock FontSize="10">Себестоимость: <Run Text="{Binding Item.CostPrice, ConverterCulture=ru-RU, StringFormat=C}"/></TextBlock>
+                        <TextBlock Foreground="{DynamicResource MessageBoxErrorColor}" Text="Недостаточно параметров для расчета!" Visibility="{Binding IsValidCostPrice, Converter={local:BooleanToVisibleConverter}, ConverterParameter=Not}"/>
                     </StackPanel>
                 </Expander>
             </Border>
@@ -187,7 +177,7 @@
                         </ItemsControl>
                     </ScrollViewer>
                     <Button x:Name="AddStandardOrderItemButton" Grid.Row="1" Margin="0,5,2.5,0" Click="AddStandardOrderItemButton_Click">
-                        <TextBlock Text="Добавить стандартную составную часть" TextWrapping="Wrap"/>
+                        <TextBlock Text="Добавить стандартную составную часть" TextWrapping="Wrap" TextAlignment="Center"/>
                     </Button>
                     <Button x:Name="AddOneCatalogOrderItemButton" Grid.Row="1" Grid.Column="1" Margin="2.5,5,0,0" Click="AddOneCatalogOrderItemButton_Click">
                         <TextBlock Text="Добавить отдельную составную часть" TextWrapping="Wrap" TextAlignment="Center"/>

@@ -7,15 +7,15 @@ Namespace DataClasses
     ''' 
     ''' !!!Нужно доделать так, чтобы при выборе из каталога услуги, требующей доп.материалов отображались дополнительные настройки
     ''' </summary>
-    Public Class SingleOrderPosition
-        Inherits NotifyProperty_Base(Of SingleOrderPosition)
+    Public Class SinglePositionInOrder
+        Inherits NotifyProperty_Base(Of SinglePositionInOrder)
 #Region "Свойства"
 #Region "Внутренние"
         Private basicCatalogItemValue As New CatalogItem
         Private materialCatalogItemValue As New CatalogItem
         Private countValue As Double = 1
-        Private isProServiceValue As Boolean = False
         Private isPersonalItemValue As Boolean = False
+        Private costPriceValue As Double = 0
 #End Region
         ''' <summary>
         '''Позиция каталога отвечающая за  доп. обработку 
@@ -57,20 +57,7 @@ Namespace DataClasses
             End Set
         End Property
         ''' <summary>
-        ''' Флаг указывающий на то, является ли выбранная основная позиция каталога специальной услугой
-        ''' </summary>
-        ''' <returns></returns>
-        Public Property IsProService As Boolean
-            Get
-                Return isProServiceValue
-            End Get
-            Set(value As Boolean)
-                isProServiceValue = value
-                OnPropertyChanged(NameOf(IsProService))
-            End Set
-        End Property
-        ''' <summary>
-        ''' Флаг указывающий на то создаа ли данная позиция в пручную (а не выбрана из каталога)
+        ''' Флаг указывающий на то создана ли данная позиция в пручную (а не выбрана из каталога)
         ''' </summary>
         ''' <returns></returns>
         Public Property IsPersonalItem As Boolean
@@ -82,21 +69,36 @@ Namespace DataClasses
                 OnPropertyChanged(NameOf(IsPersonalItem))
             End Set
         End Property
+        ''' <summary>
+        ''' Себестоимость позиции
+        ''' </summary>
+        ''' <returns></returns>
+        Public Property CostPrice As Double
+            Get
+                Return costPriceValue
+            End Get
+            Set(value As Double)
+                costPriceValue = value
+                OnPropertyChanged(NameOf(CostPrice))
+            End Set
+        End Property
 #End Region
+#Region "Процедуры и функции"
         ''' <summary>
         ''' Проверяет все ли параметры заданы для просчета себестоимости
         ''' </summary>
         ''' <returns></returns>
         Public Function GetValideCalculation() As Boolean
-            IsProService = BasicCatalogItem.ItemCategory = CatalogItem.ItemCategoryEnum.PROSERVICE
-            Return BasicCatalogItem.CostPrice > 0 And (Not IsProService OrElse (IsProService And MaterialCatalogItem.CostPrice > 0))
+            Return BasicCatalogItem.CostPrice > 0 And (Not MaterialCatalogItem.Name <> "" OrElse (MaterialCatalogItem.Name <> "" And MaterialCatalogItem.CostPrice > 0))
         End Function
         ''' <summary>
         ''' Возврачает себестоимость позиции
         ''' </summary>
         ''' <returns></returns>
         Public Function GetCostPrice() As Double
-            Return (BasicCatalogItem.CostPrice + IIf(IsProService, MaterialCatalogItem.CostPrice, 0)) * Count
+            CostPrice = (BasicCatalogItem.CostPrice + IIf(MaterialCatalogItem.Name <> "", MaterialCatalogItem.CostPrice, 0)) * Count
+            Return CostPrice
         End Function
+#End Region
     End Class
 End Namespace

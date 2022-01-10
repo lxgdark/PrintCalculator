@@ -20,20 +20,24 @@ Namespace DataClasses
         ''' </summary>
         ''' <returns></returns>
         Function GetProductCostPrice() As Double
+
+        Function GetIsValidCostPrice() As Boolean
     End Interface
     ''' <summary>
     ''' Базовый класс составной части расчета
     ''' </summary>
     <XmlInclude(GetType(StandartOrderItem))>
-    <XmlInclude(GetType(OneCatalogPositionOrderItem))>
+    <XmlInclude(GetType(SingleOrderItem))>
     <Serializable>
     Public MustInherit Class BaseOrderItem
         Inherits NotifyProperty_Base(Of BaseOrderItem)
         Implements IBaseOrderItem
+
 #Region "Свойства"
 #Region "Внутренние"
         Private productCountValue As Integer = 0
         Private productCostPriceValue As Double = 0
+        Private isValidCostPriceValue As Boolean = False
 #End Region
         ''' <summary>
         ''' Количестве изделий на листе
@@ -59,6 +63,19 @@ Namespace DataClasses
             Set(value As Double)
                 productCostPriceValue = value
                 OnPropertyChanged(NameOf(ProductCostPrice))
+            End Set
+        End Property
+        ''' <summary>
+        ''' Указывает на то, достаточно ли данны для расчета себестоимости
+        ''' </summary>
+        ''' <returns></returns>
+        Public Property IsValidCostPrice As Boolean
+            Get
+                Return isValidCostPriceValue
+            End Get
+            Set(value As Boolean)
+                isValidCostPriceValue = value
+                OnPropertyChanged(NameOf(IsValidCostPrice))
             End Set
         End Property
 #End Region
@@ -91,6 +108,9 @@ Namespace DataClasses
         End Function
         Public Function GetProductCostPrice() As Double Implements IBaseOrderItem.GetProductCostPrice
             Return ProductCostPrice
+        End Function
+        Public Function GetIsValidCostPrice() As Boolean Implements IBaseOrderItem.GetIsValidCostPrice
+            Return IsValidCostPrice
         End Function
 #End Region
 #End Region

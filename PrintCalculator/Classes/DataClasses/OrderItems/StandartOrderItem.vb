@@ -35,7 +35,7 @@ Namespace DataClasses
             End Set
         End Property
         ''' <summary>
-        ''' Размер готовго изделия
+        ''' Размер готового изделия
         ''' </summary>
         ''' <returns></returns>
         Public Property ProductSize As PaperSizeItem
@@ -113,19 +113,6 @@ Namespace DataClasses
             End Set
         End Property
         ''' <summary>
-        ''' Указывает на то, достаточно ли данны для расчета себестоимости
-        ''' </summary>
-        ''' <returns></returns>
-        Public Property IsValidCostPrice As Boolean
-            Get
-                Return isValidCostPriceValue
-            End Get
-            Set(value As Boolean)
-                isValidCostPriceValue = value
-                OnPropertyChanged(NameOf(IsValidCostPrice))
-            End Set
-        End Property
-        ''' <summary>
         ''' Количество страниц (полос)
         ''' </summary>
         ''' <returns></returns>
@@ -191,11 +178,6 @@ Namespace DataClasses
             End Set
         End Property
         ''' <summary>
-        ''' Список прочих действий с сотавной частью
-        ''' </summary>
-        ''' <returns></returns>
-        Public Property OtherOrderActionList As New ObservableCollection(Of SingleOrderPosition)
-        ''' <summary>
         ''' Загаловок составной части
         ''' </summary>
         ''' <returns></returns>
@@ -208,6 +190,11 @@ Namespace DataClasses
                 OnPropertyChanged(NameOf(ItemHeader))
             End Set
         End Property
+        ''' <summary>
+        ''' Список прочих действий с сотавной частью
+        ''' </summary>
+        ''' <returns></returns>
+        Public Property OtherOrderPositionList As New ObservableCollection(Of SinglePositionInOrder)
 #End Region
 #Region "Процедуры и функции"
 #Region "Внутренние"
@@ -252,7 +239,7 @@ Namespace DataClasses
             End If
             'Корректируем флаг валидности последующих расчетов
             IsValidCostPrice = IsValidCostPrice And Not IsCatalogPageCountError
-            For Each sop In OtherOrderActionList
+            For Each sop In OtherOrderPositionList
                 IsValidCostPrice = IsValidCostPrice And sop.GetValideCalculation
             Next
             'Если все задлано, продолжаем расчет
@@ -272,7 +259,7 @@ Namespace DataClasses
                 '
                 ProductCostPrice = (paperCostPrice + GetPrintCostPrice() + CutItem.CostPrice * ProductCount) / ProductCount * PageCount / IIf(PrintItem.Name.EndsWith("4") Or PrintItem.Name.EndsWith("1"), 2, 1) / IIf(IsProductCatalog, 2, 1)
                 'Проходим по списку дополнительных обработок и добавляем к себестоимости позиции их себестоимость
-                For Each sop In OtherOrderActionList
+                For Each sop In OtherOrderPositionList
                     ProductCostPrice += sop.GetCostPrice
                 Next
             Else
@@ -347,57 +334,12 @@ Namespace DataClasses
             'Вызываем базовое копирование свойст игнарируя те, что являются коллекциями
             MyBase.SetPropertys(input, "Collection")
             'Далее вручную переносим значения коллекции доп. действий в новый класс
-            For Each oal In CType(input, StandartOrderItem).OtherOrderActionList
-                Dim sop As New SingleOrderPosition
+            For Each oal In CType(input, StandartOrderItem).OtherOrderPositionList
+                Dim sop As New SinglePositionInOrder
                 sop.SetPropertys(oal)
-                Me.OtherOrderActionList.Add(sop)
+                Me.OtherOrderPositionList.Add(sop)
             Next
         End Sub
 #End Region
-    End Class
-    ''' <summary>
-    ''' Описывает позицию списка дополнительных обработок
-    ''' </summary>
-    Public Class OtherStandartOrderActionItem
-        Inherits NotifyProperty_Base(Of OtherStandartOrderActionItem)
-#Region "Свойства"
-#Region "Внутренние"
-        Private catalogItemValue As New CatalogItem
-        Private countInProductValue As Double = 1
-#End Region
-        ''' <summary>
-        '''Позиция каталога отвечающая за  доп. обработку 
-        ''' </summary>
-        ''' <returns></returns>
-        Public Property CatalogItem As CatalogItem
-            Get
-                Return catalogItemValue
-            End Get
-            Set(value As CatalogItem)
-                catalogItemValue = value
-                OnPropertyChanged(NameOf(CatalogItem))
-            End Set
-        End Property
-        ''' <summary>
-        ''' Значение количества указанной позиции
-        ''' </summary>
-        ''' <returns></returns>
-        Public Property CountInProduct As Double
-            Get
-                Return countInProductValue
-            End Get
-            Set(value As Double)
-                countInProductValue = value
-                OnPropertyChanged(NameOf(CountInProduct))
-            End Set
-        End Property
-#End Region
-        ''' <summary>
-        ''' Возврачает себестоимость позиции
-        ''' </summary>
-        ''' <returns></returns>
-        Public Function GetCostPrice() As Double
-            Return CatalogItem.CostPrice * CountInProduct
-        End Function
     End Class
 End Namespace

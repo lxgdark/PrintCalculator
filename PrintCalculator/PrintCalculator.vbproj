@@ -104,7 +104,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Classes\DataClasses\OrderItems\SingleOrderPosition.vb" />
+    <Compile Include="Classes\DataClasses\OrderItems\SinglePositionInOrder.vb" />
     <Compile Include="Classes\DataClasses\SavedOrderObject.vb" />
     <Compile Include="Classes\OtherFunctions.vb" />
     <Compile Include="MainPage.xaml.vb">
@@ -112,9 +112,6 @@
     </Compile>
     <Compile Include="Pages\PopupPages\CatalogItemSelectionPopupPage.xaml.vb">
       <DependentUpon>CatalogItemSelectionPopupPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\PopupPages\CreatePersonalCatalogItemPopupPage.xaml.vb">
-      <DependentUpon>CreatePersonalCatalogItemPopupPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\PopupPages\CreatePersonalPaperPopupPage.xaml.vb">
       <DependentUpon>CreatePersonalPaperPopupPage.xaml</DependentUpon>
@@ -162,7 +159,7 @@
     <Compile Include="Classes\DataClasses\Formula\CalculationFormula.vb" />
     <Compile Include="Classes\DataClasses\LocalSettings.vb" />
     <Compile Include="Classes\DataClasses\OrderItems\BaseOrderItem.vb" />
-    <Compile Include="Classes\DataClasses\OrderItems\OneCatalogPositionOrderItem.vb" />
+    <Compile Include="Classes\DataClasses\OrderItems\SingleOrderItem.vb" />
     <Compile Include="Classes\DataClasses\OrderItems\StandartOrderItem.vb" />
     <Compile Include="Classes\DataClasses\OrderPages\StandartOrderPage.vb" />
     <Compile Include="Classes\DataClasses\PaperSizeItem.vb" />
@@ -183,10 +180,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Pages\PopupPages\CatalogItemSelectionPopupPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\PopupPages\CreatePersonalCatalogItemPopupPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

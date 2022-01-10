@@ -2,6 +2,7 @@
 Imports PrintCalculator.DataClasses
 Class CatalogItemSelectionPopupPage
     Dim CatalogListSource As CollectionViewSource
+    Dim SecondCatalogListSource As CollectionViewSource
     Private Calculation As [Delegate]
     Dim catalogItem As CatalogItem
     Dim IsInsertFilter As Boolean = True
@@ -13,11 +14,12 @@ Class CatalogItemSelectionPopupPage
     ''' <summary>
     ''' Установка стартовых параметров
     ''' </summary>
-    Public Sub SetParametr(_catalogItem As CatalogItem, calculationSub As [Delegate], Optional isInsertFilterValue As Boolean = True)
+    Public Sub SetParametr(_catalogItem As CatalogItem, calculationSub As [Delegate])
         'Задаем флаг входящей фильтрацйии. Если он True, то каталог дополнительно фильтруется по разделу и тегу
-        IsInsertFilter = isInsertFilterValue
-        'Определяем ссылку на список каталога, для фильтрации
+        IsInsertFilter = True
+        'Определяем ссылки на каталоги, для фильтрации
         CatalogListSource = TryFindResource("CatalogSource")
+        SecondCatalogListSource = TryFindResource("SecondCatalogSource")
         'Сохраняем делегат, который нужно вызвать по завершению
         Calculation = calculationSub
         'Созраняем ссылку на текущю составную часть заказа
@@ -27,17 +29,28 @@ Class CatalogItemSelectionPopupPage
         ItemTag = _catalogItem.ItemTag
         AddHandler CatalogListSource.Filter, AddressOf FilterCatalog
     End Sub
+    Public Sub SetParametr(_catalogItem As SinglePositionInOrder, calculationSub As [Delegate])
+        'Задаем флаг входящей фильтрацйии. Если он True, то каталог дополнительно фильтруется по разделу и тегу
+        IsInsertFilter = False
+        'Определяем ссылки на каталоги, для фильтрации
+        CatalogListSource = TryFindResource("CatalogSource")
+        SecondCatalogListSource = TryFindResource("SecondCatalogSource")
+        'Сохраняем делегат, который нужно вызвать по завершению
+        Calculation = calculationSub
+        'Созраняем ссылку на текущю составную часть заказа
+        catalogItem = _catalogItem.BasicCatalogItem
+        'AddHandler CatalogListSource.Filter, AddressOf FilterCatalog
+    End Sub
 #End Region
 
 #Region "Свойства"
 #Region "Внутренние"
-    Private ItemCategoryValue As CatalogItem.ItemCategoryEnum = catalogItem.ItemCategoryEnum.NONE
 #End Region
     ''' <summary>
     ''' Категория выбираемой позиции каталога
     ''' </summary>
     ''' <returns></returns>
-    Public Property ItemCategory As CatalogItem.ItemCategoryEnum
+    Public Property ItemCategory As CatalogItem.ItemCategoryEnum = CatalogItem.ItemCategoryEnum.NONE
     ''' <summary>
     ''' Тэг подраздела
     ''' </summary>
@@ -103,21 +116,28 @@ Class CatalogItemSelectionPopupPage
         End If
     End Sub
 #End Region
-#Region "Выбор позиции в каталоге"
-    ''' <summary>
-    ''' Возникает при двойном нажатии на сриске
-    ''' </summary>
-    ''' <param name="sender"></param>
-    ''' <param name="e"></param>
-    Private Sub CatalogListBox_MouseDoubleClick(sender As ListBox, e As MouseButtonEventArgs)
-        SelectedItem()
+
+#Region "Работа с позициями позиции"
+    Private Sub CatalogListBoxContextMenu_AddFavorite(sender As Object, e As RoutedEventArgs)
+
     End Sub
+
+    Private Sub CatalogListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs)
+        If SecondCatalogListBox Is Nothing Then Exit Sub
+        If CType(CatalogListBox.SelectedItem, CatalogItem).ItemCategory = CatalogItem.ItemCategoryEnum.SERVICE Then
+            SecondCatalogListBox.Visibility = Visibility.Visible
+        Else
+            SecondCatalogListBox.Visibility = Visibility.Collapsed
+        End If
+    End Sub
+#End Region
+#Region "Фиксация выбора"
     ''' <summary>
     ''' Возникает при нажатии кнопки выбора
     ''' </summary>
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
-    Private Sub SelectPaperButton_Click(sender As Object, e As RoutedEventArgs)
+    Private Sub SelectButton_Click(sender As Object, e As RoutedEventArgs)
         SelectedItem()
     End Sub
     ''' <summary>
@@ -128,7 +148,7 @@ Class CatalogItemSelectionPopupPage
         If CatalogListBox.SelectedIndex > -1 Then
             'Удаляем ссылку на фильтрацию (для будущих открытий окна)
             RemoveHandler CatalogListSource.Filter, AddressOf FilterCatalog
-            'Сохраняем выбранную бумагу
+            'Сохраняем выбранную позицию
             catalogItem.SetPropertys(CatalogListBox.SelectedItem)
             'Очищаем поле поиска
             ClearFindTextButton_Click()
@@ -136,10 +156,5 @@ Class CatalogItemSelectionPopupPage
             Windows.Application.Current.Dispatcher.Invoke(Calculation)
         End If
     End Sub
-
-    Private Sub CatalogListBoxContextMenu_AddFavorite(sender As Object, e As MouseButtonEventArgs)
-
-    End Sub
 #End Region
-
 End Class

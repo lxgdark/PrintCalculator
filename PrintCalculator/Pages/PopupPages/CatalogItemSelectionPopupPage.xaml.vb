@@ -5,6 +5,7 @@ Class CatalogItemSelectionPopupPage
     Dim SecondCatalogListSource As CollectionViewSource
     Private Calculation As [Delegate]
     Dim catalogItem As CatalogItem
+    Dim SecondcatalogItem As CatalogItem
     Dim IsInsertFilter As Boolean = True
 #Region "Загрузка окна"
     Private Sub Page_Loaded(sender As Object, e As RoutedEventArgs)
@@ -12,14 +13,13 @@ Class CatalogItemSelectionPopupPage
         FindTextBox.Focus()
     End Sub
     ''' <summary>
-    ''' Установка стартовых параметров
+    ''' Установка стартовых параметров для стандартной позиции
     ''' </summary>
     Public Sub SetParametr(_catalogItem As CatalogItem, calculationSub As [Delegate])
         'Задаем флаг входящей фильтрацйии. Если он True, то каталог дополнительно фильтруется по разделу и тегу
         IsInsertFilter = True
         'Определяем ссылки на каталоги, для фильтрации
         CatalogListSource = TryFindResource("CatalogSource")
-        SecondCatalogListSource = TryFindResource("SecondCatalogSource")
         'Сохраняем делегат, который нужно вызвать по завершению
         Calculation = calculationSub
         'Созраняем ссылку на текущю составную часть заказа
@@ -27,8 +27,14 @@ Class CatalogItemSelectionPopupPage
         'Определяем категорю позиций отображаемых в каталоге
         ItemCategory = _catalogItem.ItemCategory
         ItemTag = _catalogItem.ItemTag
+        'Производим начальную фильтрацию каталога
         AddHandler CatalogListSource.Filter, AddressOf FilterCatalog
     End Sub
+    ''' <summary>
+    ''' Установка стартовых параметров для позиции с возможным сопутсвующим материалом
+    ''' </summary>
+    ''' <param name="_catalogItem"></param>
+    ''' <param name="calculationSub"></param>
     Public Sub SetParametr(_catalogItem As SinglePositionInOrder, calculationSub As [Delegate])
         'Задаем флаг входящей фильтрацйии. Если он True, то каталог дополнительно фильтруется по разделу и тегу
         IsInsertFilter = False
@@ -39,10 +45,9 @@ Class CatalogItemSelectionPopupPage
         Calculation = calculationSub
         'Созраняем ссылку на текущю составную часть заказа
         catalogItem = _catalogItem.BasicCatalogItem
-        'AddHandler CatalogListSource.Filter, AddressOf FilterCatalog
+        SecondcatalogItem = _catalogItem.MaterialCatalogItem
     End Sub
 #End Region
-
 #Region "Свойства"
 #Region "Внутренние"
 #End Region
@@ -57,7 +62,7 @@ Class CatalogItemSelectionPopupPage
     ''' <returns></returns>
     Public Property ItemTag As String
 #End Region
-#Region "Поиск по каталогу"
+#Region "Поиск и выбор позиций каталога"
     ''' <summary>
     ''' Возникает при изменении текста поиска
     ''' </summary>
@@ -73,6 +78,10 @@ Class CatalogItemSelectionPopupPage
     Private Sub ClearFindTextButton_Click()
         'Очищаем текст фильтрации
         FindTextBox.Text = ""
+        'Сбрасывем выделение
+        CatalogListBox.SelectedIndex = -1
+        'Скрываем вспомогательный 
+        SecondCatalogPanel.Visibility = Visibility.Collapsed
     End Sub
     ''' <summary>
     ''' Фильтрует каталог по заданным параметрам
@@ -115,20 +124,55 @@ Class CatalogItemSelectionPopupPage
             End If
         End If
     End Sub
+    ''' <summary>
+    ''' Происходит при выборе позиции в основном каталоге
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub CatalogListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs)
+        'Если страница еще не прогрузилась или в основном каталоге ничего не выбрано, выходим из процедуры
+        If SecondCatalogListBox Is Nothing Or CatalogListBox.SelectedIndex = -1 Then Exit Sub
+        'Задаем тэг для поиска вспомогательных материалов
+        ItemTag = CType(CatalogListBox.SelectedItem, CatalogItem).ItemTag
+        'Проходим списком по второстпенному каталогу
+        For Each scl As CatalogItem In SecondCatalogListBox.Items
+            'Если текущая позиция основного и второстепенного каталога соответсвует всем требованием...
+            If CType(CatalogListBox.SelectedItem, CatalogItem).ItemCategory = CatalogItem.ItemCategoryEnum.SERVICE AndAlso scl.ItemCategory = CatalogItem.ItemCategoryEnum.MATERIAL AndAlso scl.ItemTag = ItemTag Then
+                '...отображаем второстепенную панель
+                SecondCatalogPanel.Visibility = Visibility.Visible
+                'И проводим фильтрацию второстепенного каталога так, чтобы в нем были показаны материалы с тем же тегом, что и выбранной услуги
+                AddHandler SecondCatalogListSource.Filter, AddressOf FilterSecondCatalog
+                'Сразу же покидаем цикл, та как условия для отображения воторостепенной панели и запуска фильтрации были выполнены
+                Exit For
+            Else
+                'Скрываем второстепенную панель
+                SecondCatalogPanel.Visibility = Visibility.Collapsed
+            End If
+        Next
+    End Sub
+    ''' <summary>
+    ''' Фильтрация каталога вспомогательных материалов
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub FilterSecondCatalog(sender As Object, e As FilterEventArgs)
+        'Определяем текущую проверяемую позицию каталога
+        Dim citem As CatalogItem = CType(e.Item, CatalogItem)
+        'Если она не пустая
+        If Not (citem Is Nothing) Then
+            'Определяем переменную результата фильтрации (да/нет)
+            Dim result As Boolean = True
+            'Проверяем соответсвуют ли текущая позиция каталога фильтрации по категории и тегу
+            result = result AndAlso citem.ItemCategory = CatalogItem.ItemCategoryEnum.MATERIAL
+            result = result AndAlso citem.ItemTag = ItemTag
+            'Возвращаем результат
+            e.Accepted = result
+        End If
+    End Sub
 #End Region
-
-#Region "Работа с позициями позиции"
+#Region "Допю функции"
     Private Sub CatalogListBoxContextMenu_AddFavorite(sender As Object, e As RoutedEventArgs)
 
-    End Sub
-
-    Private Sub CatalogListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs)
-        If SecondCatalogListBox Is Nothing Then Exit Sub
-        If CType(CatalogListBox.SelectedItem, CatalogItem).ItemCategory = CatalogItem.ItemCategoryEnum.SERVICE Then
-            SecondCatalogListBox.Visibility = Visibility.Visible
-        Else
-            SecondCatalogListBox.Visibility = Visibility.Collapsed
-        End If
     End Sub
 #End Region
 #Region "Фиксация выбора"
@@ -146,8 +190,20 @@ Class CatalogItemSelectionPopupPage
     Private Sub SelectedItem()
         'Если в каталоге есть выбранный элемент...
         If CatalogListBox.SelectedIndex > -1 Then
-            'Удаляем ссылку на фильтрацию (для будущих открытий окна)
-            RemoveHandler CatalogListSource.Filter, AddressOf FilterCatalog
+            'Если спомогательная панель открыта...
+            If SecondCatalogPanel.Visibility = Visibility.Visible Then
+                '...и доп. материал выбран...
+                If SecondCatalogListBox.SelectedIndex > -1 Then
+                    '...сохранаяем выбранную второстепенную позицию
+                    SecondcatalogItem.SetPropertys(SecondCatalogListBox.SelectedItem)
+                Else
+                    'В противном случае выходим из процедуры
+                    Exit Sub
+                End If
+            Else
+                'Если вспомогательная панель закрыта, то обнуляем данные о вспомогательном материале
+                SecondcatalogItem = New CatalogItem
+            End If
             'Сохраняем выбранную позицию
             catalogItem.SetPropertys(CatalogListBox.SelectedItem)
             'Очищаем поле поиска

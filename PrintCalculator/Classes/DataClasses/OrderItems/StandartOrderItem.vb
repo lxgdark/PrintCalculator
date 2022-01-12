@@ -8,7 +8,7 @@ Namespace DataClasses
 #Region "Внутренние"
         Private printPaperSizeValue As New PaperSizeItem
         Private productSizeValue As New PaperSizeItem With {.Name = "А4", .Height = 210, .Width = 297, .FieldHeight = 2, .FieldWidth = 2}
-        Private isProductLargePaperValue As Boolean = True
+        Private isPaperSizeMatchValue As Boolean = True
         Private isValidCostPriceValue As Boolean = False
         Private isProductOrientationEqualsPaperOrientationValue As Boolean = False
         Private paperItemValue As New CatalogItem With {.ItemCategory = CatalogItem.ItemCategoryEnum.MATERIAL, .ItemTag = "PAPER"}
@@ -51,13 +51,13 @@ Namespace DataClasses
         ''' Флаг указывающий на ошибку, когджа изделие больше печатной области
         ''' </summary>
         ''' <returns></returns>
-        Public Property IsProductLargePaper As Boolean
+        Public Property IsPaperSizeMatch As Boolean
             Get
-                Return isProductLargePaperValue
+                Return isPaperSizeMatchValue
             End Get
             Set(value As Boolean)
-                isProductLargePaperValue = value
-                OnPropertyChanged(NameOf(IsProductLargePaper))
+                isPaperSizeMatchValue = value
+                OnPropertyChanged(NameOf(IsPaperSizeMatch))
             End Set
         End Property
         ''' <summary>
@@ -212,9 +212,9 @@ Namespace DataClasses
             Dim productHeight As Double = ProductSize.Height * IIf(isCatalogFoldHeight, 2, 1) + ProductSize.FieldHeight * 2
             Dim productWidth As Double = ProductSize.Width * IIf(isCatalogFoldWidth, 2, 1) + ProductSize.FieldWidth * 2
             'Если изделие больше листа, задаем флаг ошибки
-            IsProductLargePaper = (productHeight <= paperHeight And productWidth <= paperWidth) Or (productHeight <= paperWidth And productWidth <= paperHeight)
+            IsPaperSizeMatch = (productHeight <= paperHeight And productWidth <= paperWidth) Or (productHeight <= paperWidth And productWidth <= paperHeight)
             'Если ошибки размера нет, идем дальше
-            If IsProductLargePaper Then
+            If IsPaperSizeMatch Then
                 ProductCount = GetProductInPaper(New Size(paperWidth, paperHeight), New Size(productWidth, productHeight), True)
             Else
                 'Если размер задан с ошибкой, ставим число изделий на листе в 0
@@ -249,6 +249,14 @@ Namespace DataClasses
                 Dim paperWidth As Double = PrintPaperSize.Width
                 'Высчитываем себестоимость печатного листа исходя из того, что ряд листов может поставляться больше, чем SRA3
                 Dim paperCostPrice = PaperItem.CostPrice / GetProductInPaper(sheetSize, New Size(paperWidth, paperHeight))
+                'Если в результати вычисления количества печатных облостей внутри печатного листа, получена бесконечность, значит печатный лист меньше указанной печатной области
+                If Double.IsInfinity(paperCostPrice) Then
+                    'Ставим соответвующий флаг и выходим из процедуры
+                    IsPaperSizeMatch = False
+                    Exit Sub
+                Else
+                    IsPaperSizeMatch = True
+                End If
                 'Высчитываем себестоимость составной части
                 '
                 'Себестоимость бумаги высчитали ранее

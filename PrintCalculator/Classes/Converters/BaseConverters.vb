@@ -166,4 +166,10 @@ Public Class NullCountToVisibleConverter
         End If
     End Function
 End Class
+Public Class MinusConverter
+    Inherits ConvertorBase(Of MinusConverter)
+    Public Overrides Function Convert(value As Object, targetType As Type, parameter As Object, culture As CultureInfo) As Object
+        Return -value
+    End Function
+End Class
 #End Region

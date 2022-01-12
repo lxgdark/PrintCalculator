@@ -55,6 +55,11 @@ Class OrderPage
             sender.Value = OtherFunctions.GetFormulaRezult(sender.Text)
         End If
     End Sub
+    Private Sub DoubleUpDown_KeyDown(sender As DoubleUpDown, e As KeyEventArgs)
+        If e.Key = Key.Enter Then
+            sender.Value = OtherFunctions.GetFormulaRezult(sender.Text)
+        End If
+    End Sub
 #End Region
 #Region "Работа с составными частями"
     ''' <summary>
@@ -254,10 +259,10 @@ Class OrderPage
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     Private Sub SelectOneCatalogItemButton_Click(sender As Object, e As RoutedEventArgs)
-        'Dim page As New CatalogItemSelectionPopupPage
-        'page.SetParametr(sender.Tag.BasicCatalogItem, New CalculationDelegate(AddressOf Calculation), False)
-        'OrderItemParameterFrame.Content = page
-        'OrderItemParameterPopup.IsOpen = True
+        Dim page As New CatalogItemSelectionPopupPage
+        page.SetParametr(sender.Tag.Item, New CalculationDelegate(AddressOf Calculation))
+        OrderItemParameterFrame.Content = page
+        OrderItemParameterPopup.IsOpen = True
     End Sub
     ''' <summary>
     ''' Происходит при нажатии кнопки расчета количества в отдельной позиции
@@ -356,36 +361,52 @@ Class OrderPage
         For Each item In MeContext.OrderItemList
             'Вызываем в составных частях процедуру просчета
             item.Calculation()
+        Next
+        For Each item In MeContext.OrderItemList
+            'Проверяем валидность указанных данных в составных частях
             If item.GetIsValidCostPrice Then
+                'Если данные валидны, то вычисляем параметры расчета
                 MeContext.MinPrintCopy = IIf(item.GetProductCount > MeContext.MinPrintCopy, item.GetProductCount, MeContext.MinPrintCopy)
                 MeContext.MinCostPrice += item.GetProductCostPrice * item.GetProductCount
                 MeContext.ProductCostPrice += item.GetProductCostPrice
             Else
+                'Если хотя бы одна составная часть имеет не все данные для расчета, то обнуляем расчетные данные и выходим из процедуры
                 MeContext.ClearPropertys()
                 Exit For
             End If
         Next
+        'Расчитываем значение для сигнальной формулы
         Dim sinalFormulas As New SignalCalculationFormula
         MeContext.MinPrice = sinalFormulas.GetCalculationSumm(MeContext.MinPrintCopy, MeContext.ProductCostPrice)
+        'Расчтываем значения для всего списка тиражей
         For Each pccl In MeContext.PrintCopyCountList
             pccl.CostPriceForOne = MeContext.ProductCostPrice
             pccl.MinPrintCount = MeContext.MinPrintCopy
         Next
     End Sub
 
-    'Private Sub SetPersonalItem_Click(sender As Object, e As RoutedEventArgs)
-    '    Dim page As New CreatePersonalCatalogItemPopupPage
-    '    page.SetParametr(sender.Tag.BasicCatalogItem, New CalculationDelegate(AddressOf Calculation))
-    '    OrderItemParameterFrame.Content = page
-    '    OrderItemParameterPopup.IsOpen = True
-    'End Sub
+    Private Sub AddOtherOrderItemButton_Click(sender As Object, e As RoutedEventArgs)
+        OtherOrderItemPopupList.IsOpen = True
+    End Sub
 
-    'Private Sub AddPersonalItem_Click(sender As Object, e As RoutedEventArgs)
-    '    Dim sop As New SingleOrderPosition
-    '    sop.IsPersonalItem = True
-    '    CType(sender.Tag, StandartOrderItem).OtherOrderPositionList.Add(sop)
-    '    Calculation()
-    '    SetPersonalItem_Click(New Button With {.Tag = sop}, Nothing)
-    '    OrderItemsScrollViewer.ScrollToEnd()
-    'End Sub
+    Private Sub AddPersonalOrderItemButton_Click(sender As Object, e As RoutedEventArgs)
+        'Добавляем отдельную составную часть
+        Dim ocpoi As New SingleOrderItem
+        ocpoi.Item.IsPersonalItem = True
+        ocpoi.ItemHeader = "Отдельная составная часть заданная вручную"
+        MeContext.OrderItemList.Add(ocpoi)
+        'Вызываем открытие страницы создания/редактирования новой позиции
+        SetPersonalItem_Click(New Button With {.Tag = ocpoi}, Nothing)
+        'Вызываем стартовый просчет внутри составной части
+        ocpoi.Calculation()
+        OrderItemsScrollViewer.ScrollToEnd()
+        OtherOrderItemPopupList.IsOpen = False
+    End Sub
+
+    Private Sub SetPersonalItem_Click(sender As Object, e As RoutedEventArgs)
+        Dim page As New CreatePersonalCatalogItemPopupPage
+        '    page.SetParametr(sender.Tag.BasicCatalogItem, New CalculationDelegate(AddressOf Calculation))
+        OrderItemParameterFrame.Content = page
+        OrderItemParameterPopup.IsOpen = True
+    End Sub
 End Class

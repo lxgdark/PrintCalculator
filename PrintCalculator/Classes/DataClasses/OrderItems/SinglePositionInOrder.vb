@@ -16,6 +16,7 @@ Namespace DataClasses
         Private countValue As Double = 1
         Private isPersonalItemValue As Boolean = False
         Private costPriceValue As Double = 0
+        Private headerValue As String = ""
 #End Region
         ''' <summary>
         '''Позиция каталога отвечающая за  доп. обработку 
@@ -82,6 +83,19 @@ Namespace DataClasses
                 OnPropertyChanged(NameOf(CostPrice))
             End Set
         End Property
+        ''' <summary>
+        ''' Заголовок составной части
+        ''' </summary>
+        ''' <returns></returns>
+        Public Property Header As String
+            Get
+                Return headerValue
+            End Get
+            Set(value As String)
+                headerValue = value
+                OnPropertyChanged(NameOf(Header))
+            End Set
+        End Property
 #End Region
 #Region "Процедуры и функции"
         ''' <summary>
@@ -89,7 +103,8 @@ Namespace DataClasses
         ''' </summary>
         ''' <returns></returns>
         Public Function GetValideCalculation() As Boolean
-            Return BasicCatalogItem.CostPrice > 0 And (Not MaterialCatalogItem.Name <> "" OrElse (MaterialCatalogItem.Name <> "" And MaterialCatalogItem.CostPrice > 0))
+            Header = BasicCatalogItem.Name & IIf(MaterialCatalogItem.Name <> "", " (" & MaterialCatalogItem.Name & ")", "")
+            Return BasicCatalogItem.CostPrice > 0 And (MaterialCatalogItem.CostPrice > 0 OrElse MaterialCatalogItem.Name = "")
         End Function
         ''' <summary>
         ''' Возврачает себестоимость позиции

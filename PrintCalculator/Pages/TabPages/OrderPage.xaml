@@ -14,7 +14,7 @@
                             <TextBlock Text="X" Margin="0,0,5,0" VerticalAlignment="Center"/>
                             <xceed:IntegerUpDown Value="{Binding PrintPaperSize.Height}" ValueChanged="Calculation" CultureInfo="ru-RU" PreviewKeyDown="IntegerUpDown_KeyDown"/>
                             <Button x:Name="PrintPaperSizeParametrButton" Style="{DynamicResource IconButtonStyle}" Content="/Pict/Buttons/Settings.png" ToolTip="Дополнительные параметры размера" Click="PrintPaperSizeParametrButton_Click" Tag="{Binding}"/>
-                            <Border Background="{DynamicResource MessageBoxErrorColor}" Height="25" Width="25" Margin="5,0,0,0" ToolTip="Размер изделия больше размера бумаги" Visibility="{Binding IsProductLargePaper, Converter={local:BooleanToVisibleConverter}, ConverterParameter=Not}">
+                            <Border Background="{DynamicResource MessageBoxErrorColor}" Height="25" Width="25" Margin="5,0,0,0" ToolTip="Печатная область не соответсвует размеру листа или меньше размера изделия" Visibility="{Binding IsPaperSizeMatch, Converter={local:BooleanToVisibleConverter}, ConverterParameter=Not}">
                                 <Border.OpacityMask>
                                     <ImageBrush ImageSource="/Pict/Buttons/Information.png" Stretch="Uniform"/>
                                 </Border.OpacityMask>
@@ -97,12 +97,12 @@
                                     <StackPanel Margin="0,5,0,0">
                                         <DockPanel LastChildFill="True">
                                             <StackPanel DockPanel.Dock="Right"  Margin="5,0,0,0" Orientation="Horizontal">
-                                                <xceed:DoubleUpDown Value="{Binding Count}" ValueChanged="Calculation" Minimum="0"/>
+                                                <xceed:DoubleUpDown Value="{Binding Count}" ValueChanged="Calculation" Minimum="0" PreviewKeyDown="DoubleUpDown_KeyDown"/>
                                                 <Button Style="{DynamicResource IconButtonStyle}" Visibility="{Binding IsPersonalItem, Converter={local:BooleanToVisibleConverter}}" x:Name="SetPersonalItem" Content="/Pict/Buttons/Edit.png" ToolTip="Задать доп.часть вручную" Tag="{Binding}" Margin="5,0,0,0"/>
                                                 <Button Style="{DynamicResource IconButtonStyle}" Visibility="{Binding IsPersonalItem, Converter={local:BooleanToVisibleConverter}, ConverterParameter=Not}" x:Name="SelectOthetCatalogItemButton" Click="SelectOthetCatalogItemButton_Click" Content="/Pict/Buttons/Order.png" ToolTip="Выбрать из каталога" Tag="{Binding}"/>
                                                 <Button Style="{DynamicResource IconButtonStyle}" x:Name="KillOthetCatalogItemButton" Click="KillOthetCatalogItemButton_Click" Content="/Pict/Buttons/Close.png" ToolTip="Удалить позицию" Tag="{Binding}"/>
                                             </StackPanel>
-                                            <TextBox IsReadOnly="True" Text="{Binding BasicCatalogItem.Name}"/>
+                                            <TextBox IsReadOnly="True" Text="{Binding Header}"/>
                                         </DockPanel>
                                         <Border BorderBrush="{DynamicResource BorderDarkColor}" BorderThickness="1" CornerRadius="1" Margin="0,15,0,15"/>
                                     </StackPanel>
@@ -132,12 +132,11 @@
                     <StackPanel Margin="0,5,0,0">
                         <DockPanel LastChildFill="True">
                             <StackPanel DockPanel.Dock="Right"  Margin="5,0,0,0" Orientation="Horizontal">
-                                <xceed:DoubleUpDown Value="{Binding CountInProduct}" ValueChanged="Calculation" Minimum="0"/>
-                                <Button Style="{DynamicResource IconButtonStyle}" x:Name="SetPersonalItem" Content="/Pict/Buttons/Edit.png" ToolTip="Задать доп.часть вручную" Tag="{Binding}" Margin="5,0,0,0"/>
-                                <Button Style="{DynamicResource IconButtonStyle}" x:Name="SelectOneCatalogItemButton" Click="SelectOneCatalogItemButton_Click" Content="/Pict/Buttons/Order.png" ToolTip="Выбрать из каталога" Tag="{Binding}"/>
-                                <Button Style="{DynamicResource IconButtonStyle}" x:Name="СalculationOneCatalogItemButton" Click="СalculationOneCatalogItemButton_Click" Content="/Pict/Buttons/Сalculator.png" ToolTip="Расчитать количество на одно изделие" Tag="{Binding}"/>
+                                <xceed:DoubleUpDown Value="{Binding Item.Count}" ValueChanged="Calculation" Minimum="0" PreviewKeyDown="DoubleUpDown_KeyDown"/>
+                                <Button Style="{DynamicResource IconButtonStyle}" x:Name="SetPersonalItem" Content="/Pict/Buttons/Edit.png" ToolTip="Задать доп.часть вручную" Tag="{Binding}" Margin="5,0,0,0" Visibility="{Binding Item.IsPersonalItem, Converter={local:BooleanToVisibleConverter}}" Click="SetPersonalItem_Click"/>
+                                <Button Style="{DynamicResource IconButtonStyle}" x:Name="SelectOneCatalogItemButton" Click="SelectOneCatalogItemButton_Click" Content="/Pict/Buttons/Order.png" ToolTip="Выбрать из каталога" Tag="{Binding}" Visibility="{Binding Item.IsPersonalItem, Converter={local:BooleanToVisibleConverter}, ConverterParameter=Not}"/>
                             </StackPanel>
-                            <TextBox IsReadOnly="True" Text="{Binding Item.BasicCatalogItem.Name}"/>
+                            <TextBox IsReadOnly="True" Text="{Binding Item.Header}"/>
                         </DockPanel>
                         <TextBlock FontSize="10">Себестоимость: <Run Text="{Binding Item.CostPrice, ConverterCulture=ru-RU, StringFormat=C}"/></TextBlock>
                         <TextBlock Foreground="{DynamicResource MessageBoxErrorColor}" Text="Недостаточно параметров для расчета!" Visibility="{Binding IsValidCostPrice, Converter={local:BooleanToVisibleConverter}, ConverterParameter=Not}"/>
@@ -180,9 +179,9 @@
                         <TextBlock Text="Добавить стандартную составную часть" TextWrapping="Wrap" TextAlignment="Center"/>
                     </Button>
                     <Button x:Name="AddOneCatalogOrderItemButton" Grid.Row="1" Grid.Column="1" Margin="2.5,5,0,0" Click="AddOneCatalogOrderItemButton_Click">
-                        <TextBlock Text="Добавить отдельную составную часть" TextWrapping="Wrap" TextAlignment="Center"/>
+                        <TextBlock Text="Добавить одиночную составную часть" TextWrapping="Wrap" TextAlignment="Center"/>
                     </Button>
-                    <Button Width="15" Padding="0" Margin="2,5,0,0" ToolTip="Дополнительные варианты составных частей" Grid.Column="2" Grid.Row="1">
+                    <Button x:Name="AddOtherOrderItemButton" Width="15" Padding="0" Margin="2,5,0,0" ToolTip="Дополнительные варианты составных частей" Grid.Column="2" Grid.Row="1" Click="AddOtherOrderItemButton_Click">
                         <Path Data="{StaticResource UpArrovGeomertry}" HorizontalAlignment="Center" SnapsToDevicePixels="false" Stroke="{DynamicResource BorderLightColor}" StrokeThickness="2" VerticalAlignment="Center"/>
                     </Button>
                 </Grid>
@@ -249,6 +248,13 @@
             <!--#region Всплывающие окна-->
             <Popup Name="OrderItemParameterPopup" StaysOpen="False" AllowsTransparency="True" PlacementTarget="{Binding ElementName=CalculatePanel}" Placement="Center" Height="{Binding ElementName=CalculatePanel, Path=ActualHeight}" Width="{Binding ElementName=CalculatePanel, Path=ActualWidth}" PopupAnimation="Slide">
                 <Frame Name="OrderItemParameterFrame" NavigationUIVisibility="Hidden"/>
+            </Popup>
+            <Popup Name="OtherOrderItemPopupList" Placement="Top" HorizontalOffset="{Binding ElementName=OtherOrderItemListPanel, Path=ActualWidth, Converter={local:MinusConverter}}" VerticalOffset="-5" StaysOpen="False" AllowsTransparency="True" PlacementTarget="{Binding ElementName=AddOtherOrderItemButton}" PopupAnimation="Scroll">
+                <StackPanel x:Name="OtherOrderItemListPanel">
+                    <Button Margin="3" x:Name="AddPersonalOrderItemButton" Click="AddPersonalOrderItemButton_Click">
+                        <TextBlock Text="Создать новую одиночную составную часть" FontWeight="SemiBold" TextWrapping="Wrap" TextAlignment="Center"/>
+                    </Button>
+                </StackPanel>
             </Popup>
             <!--#endregion-->
         </Grid>

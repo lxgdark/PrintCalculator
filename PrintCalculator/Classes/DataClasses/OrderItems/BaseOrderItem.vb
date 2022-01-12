@@ -97,6 +97,8 @@ Namespace DataClasses
                 result.Width = s(0)
                 'Вторая часть высота
                 result.Height = s(1)
+            ElseIf unit = "A3" Then
+                result = New Size(420, 297)
             End If
             Return result
         End Function

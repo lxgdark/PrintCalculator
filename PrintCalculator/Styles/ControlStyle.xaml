@@ -1179,6 +1179,141 @@
         </Setter>
     </Style>
     <!--#endregion-->
+    <!--#region ComboBox-->
+    <!--ComboBox состоит из трех частей.
+    
+    Первая часть это кнопка ToggleButton. Она нужна, чтобы свойство IsOpen у Popup привязывалось к IsChecked кнопки.
+    Таким образом не требуется кода для открытия всплывающей части ComboBox.
+    ToggleButton имеет отдельный ControlTemplate для описания внешнего вида кнопки, которая по сути выступает внешним видом всего ComboBox.
+    
+    Вторая часть основного макета это ContentPresenter, который принимает Content выбранного элемента списка.
+    Он размещается по верх ToggleButton ввиде этажа сверху.
+    Это сделано для того, чтобы ContentPresenter мог реализовать шаблон данных и показать выбранный элемент списка согласно желаемому внешнему виду.
+    Имеет отсуп справа равный элемнту в макете ToggleButton, который визуализирует наличие раскрывающегося списка (стрелка вниз)
+    
+    Третья часть Popup описывает содержимое всплывающего элемента. Макет Popup содержит ScrollViewer и Panel определяющую порядок отображения элементов списка.
+    По сути содержимое Popup является обычным ItemsControl с вытикающей возможностью настройки.
+    Так, для реализации внешнего вида и поведения каждого элемента списка можно настроить стиль для ComboBoxItem-->
+    <!--ComboBoxToggleButton-->
+    <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
+        <Border x:Name="Border" BorderBrush="{StaticResource BorderDarkColor}" CornerRadius="{StaticResource BorderCornerRadiusMini}" BorderThickness="{StaticResource BorderThickness}" Background="{StaticResource BackgroundLightColor}">
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal" />
+                    <VisualState x:Name="MouseOver">
+                        <Storyboard>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Stroke">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource BorderLightColor}"/>
+                            </ObjectAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </VisualState>
+                    <VisualState x:Name="Pressed"/>
+                    <VisualState x:Name="Disabled">
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="Border" Storyboard.TargetProperty="Opacity" To="0.5" Duration="0:0:0"/>
+                        </Storyboard>
+                    </VisualState>
+                </VisualStateGroup>
+                <VisualStateGroup x:Name="CheckStates">
+                    <VisualState x:Name="Checked">
+                        <Storyboard>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Data">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource UpArrovGeomertry}"/>
+                            </ObjectAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </VisualState>
+                    <VisualState x:Name="Unchecked" />
+                    <VisualState x:Name="Indeterminate" />
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="30" />
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="1" Cursor="Hand" SnapsToDevicePixels="False">
+                    <Path x:Name="Arrow" Data="{StaticResource DownArrovGeomertry}" HorizontalAlignment="Center" SnapsToDevicePixels="false" Stroke="{StaticResource BorderDarkColor}" StrokeThickness="2" VerticalAlignment="Center"/>
+                </Border>
+            </Grid>
+        </Border>
+    </ControlTemplate>
+    <!--Шаблон отображения выбранного элемента-->
+    <DataTemplate x:Key="ComboBoxItemTemplate">
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <TextBlock FontSize="14" Text="{Binding}" VerticalAlignment="Center"/>
+        </Grid>
+    </DataTemplate>
+    <!--ComboBox-->
+    <Style x:Key="{x:Type ComboBox}" TargetType="{x:Type ComboBox}">
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="MinWidth" Value="200" />
+        <Setter Property="MinHeight" Value="30" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ComboBox}">
+                    <Grid>
+                        <ToggleButton x:Name="ToggleButton" Template="{StaticResource ComboBoxToggleButton}" Focusable="false" ClickMode="Press" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"/>
+                        <ContentPresenter x:Name="ContentSite" IsHitTestVisible="False" Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{StaticResource ComboBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="5,5,35,5"/>
+                        <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Scroll">
+                            <Grid MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}" SnapsToDevicePixels="True" >
+                                <Border x:Name="DropDownBorder" Margin="0,3,0,0" Padding="5" CornerRadius="{StaticResource BorderCornerRadiusMini}" BorderThickness="{StaticResource BorderThickness}" BorderBrush="{StaticResource BorderDarkColor}" Background="{StaticResource BackgroundLightColor}">
+                                    <ScrollViewer SnapsToDevicePixels="True">
+                                        <VirtualizingStackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
+                                    </ScrollViewer>
+                                </Border>
+                            </Grid>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasItems" Value="false">
+                            <Setter TargetName="DropDownBorder" Property="MinHeight" Value="95" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!--ComboBoxItem-->
+    <Style x:Key="{x:Type ComboBoxItem}" TargetType="{x:Type ComboBoxItem}">
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ComboBoxItem}">
+                    <Border x:Name="Border" Padding="5" SnapsToDevicePixels="true" Background="Transparent" Margin="0,5,0,5" CornerRadius="{StaticResource BorderCornerRadiusMax}">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="Border" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)">
+                                            <EasingColorKeyFrame KeyTime="0:0:0.2" Value="{Binding ThemeWorker.CurrentTheme.BackgroundStandartColor, Source={StaticResource AppCore}}"/>
+                                        </ColorAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Normal"/>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="SelectionStates">
+                                <VisualState x:Name="Unselected" />
+                                <VisualState x:Name="Selected">
+                                    <Storyboard>
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="Border" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)">
+                                            <EasingColorKeyFrame KeyTime="0:0:0" Value="{Binding ThemeWorker.CurrentTheme.BackgroundStandartColor, Source={StaticResource AppCore}}"/>
+                                        </ColorAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="SelectedUnfocused"/>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <ContentPresenter VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!--#endregion-->
     <!--#region Xceed-->
     <Style TargetType="{x:Type xctk:ColorCanvas}">
         <Setter Property="Template">

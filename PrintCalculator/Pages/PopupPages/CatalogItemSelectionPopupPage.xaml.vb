@@ -5,7 +5,7 @@ Class CatalogItemSelectionPopupPage
     Dim SecondCatalogListSource As CollectionViewSource
     Private Calculation As [Delegate]
     Dim catalogItem As CatalogItem
-    Dim SecondcatalogItem As CatalogItem
+    Dim secondcatalogItem As CatalogItem
     Dim IsInsertFilter As Boolean = True
 #Region "Загрузка окна"
     Private Sub Page_Loaded(sender As Object, e As RoutedEventArgs)

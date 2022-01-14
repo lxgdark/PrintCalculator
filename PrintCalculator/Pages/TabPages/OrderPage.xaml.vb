@@ -15,8 +15,8 @@ Class OrderPage
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     Private Sub Page_Loaded(sender As Object, e As RoutedEventArgs)
-        MeContext = Me
         'Задоем контекст данных
+        MeContext = Me
         DataContext = MeContext
         'Если страница уже открыта, то выходим из процедуры
         If MeContext.isPageOpen Then Exit Sub
@@ -50,14 +50,9 @@ Class OrderPage
     ''' </summary>
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
-    Private Sub IntegerUpDown_KeyDown(sender As IntegerUpDown, e As KeyEventArgs)
+    Private Sub UpDown_KeyDown(sender As Object, e As KeyEventArgs)
         If e.Key = Key.Enter Then
-            sender.Value = OtherFunctions.GetFormulaRezult(sender.Text)
-        End If
-    End Sub
-    Private Sub DoubleUpDown_KeyDown(sender As DoubleUpDown, e As KeyEventArgs)
-        If e.Key = Key.Enter Then
-            sender.Value = OtherFunctions.GetFormulaRezult(sender.Text)
+            sender.Value = OtherFunctions.GetFormulaRezult(sender.Text.Replace(",", "."))
         End If
     End Sub
 #End Region
@@ -274,6 +269,37 @@ Class OrderPage
     End Sub
 
 #End Region
+#Region "Дополнительные варианты составных частей"
+    ''' <summary>
+    ''' Происходит при нажатии кнопки открытия дополнительных вариантов составныхч частей
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub AddOtherOrderItemButton_Click(sender As Object, e As RoutedEventArgs)
+        OtherOrderItemPopupList.IsOpen = True
+    End Sub
+
+    Private Sub AddPersonalOrderItemButton_Click(sender As Object, e As RoutedEventArgs)
+        'Добавляем отдельную составную часть
+        Dim ocpoi As New SingleOrderItem
+        ocpoi.Item.IsPersonalItem = True
+        ocpoi.ItemHeader = "Отдельная составная часть заданная вручную"
+        MeContext.OrderItemList.Add(ocpoi)
+        'Вызываем открытие страницы создания/редактирования новой позиции
+        SetPersonalItem_Click(New Button With {.Tag = ocpoi}, Nothing)
+        'Вызываем стартовый просчет внутри составной части
+        ocpoi.Calculation()
+        OrderItemsScrollViewer.ScrollToEnd()
+        OtherOrderItemPopupList.IsOpen = False
+    End Sub
+
+    Private Sub SetPersonalItem_Click(sender As Object, e As RoutedEventArgs)
+        Dim page As New CreatePersonalCatalogItemPopupPage
+        page.SetParametr(sender.Tag.Item, New CalculationDelegate(AddressOf Calculation))
+        OrderItemParameterFrame.Content = page
+        OrderItemParameterPopup.IsOpen = True
+    End Sub
+#End Region
 #Region "Расчет тиража"
     ''' <summary>
     ''' Добавление нового расчета для тиража
@@ -385,28 +411,4 @@ Class OrderPage
         Next
     End Sub
 
-    Private Sub AddOtherOrderItemButton_Click(sender As Object, e As RoutedEventArgs)
-        OtherOrderItemPopupList.IsOpen = True
-    End Sub
-
-    Private Sub AddPersonalOrderItemButton_Click(sender As Object, e As RoutedEventArgs)
-        'Добавляем отдельную составную часть
-        Dim ocpoi As New SingleOrderItem
-        ocpoi.Item.IsPersonalItem = True
-        ocpoi.ItemHeader = "Отдельная составная часть заданная вручную"
-        MeContext.OrderItemList.Add(ocpoi)
-        'Вызываем открытие страницы создания/редактирования новой позиции
-        SetPersonalItem_Click(New Button With {.Tag = ocpoi}, Nothing)
-        'Вызываем стартовый просчет внутри составной части
-        ocpoi.Calculation()
-        OrderItemsScrollViewer.ScrollToEnd()
-        OtherOrderItemPopupList.IsOpen = False
-    End Sub
-
-    Private Sub SetPersonalItem_Click(sender As Object, e As RoutedEventArgs)
-        Dim page As New CreatePersonalCatalogItemPopupPage
-        '    page.SetParametr(sender.Tag.BasicCatalogItem, New CalculationDelegate(AddressOf Calculation))
-        OrderItemParameterFrame.Content = page
-        OrderItemParameterPopup.IsOpen = True
-    End Sub
 End Class

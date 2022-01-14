@@ -1,8 +1,37 @@
 ﻿<Page x:Class="CreatePersonalCatalogItemPopupPage"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:cm="clr-namespace:System.ComponentModel;assembly=WindowsBase" xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit" Loaded="Page_Loaded">
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="clr-namespace:PrintCalculator"  xmlns:System="clr-namespace:System;assembly=mscorlib" xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit" Loaded="Page_Loaded">
     <Grid Background="{DynamicResource BackgroundLightColor}">
         <Grid Margin="10">
-            
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel TextBlock.Foreground="{DynamicResource TextDarkColor}" TextBlock.FontSize="14" TextBlock.FontWeight="SemiBold">
+                <TextBlock Text="Наименование позиции (любое понятное и удобное):"/>
+                <TextBox x:Name="PositionNameTextBox" Margin="0,5,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                    <TextBlock Text="Цена у поставщика за единицу товара (руб):" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                    <xceed:DoubleUpDown Margin="0,0,5,0" x:Name="CostPrice" Minimum="0"/>
+                </StackPanel>
+                <CheckBox x:Name="IsSecondMaterialCheck" Content="Указать вспомогательный материал"/>
+                <StackPanel Margin="0,10,0,0" Visibility="{Binding ElementName=IsSecondMaterialCheck, Path=IsChecked, Converter={local:BooleanToVisibleConverter}}">
+                    <TextBlock Text="Наименование вспомогательного материала (любое понятное и удобное):"/>
+                    <TextBox x:Name="SecondPositionNameTextBox" Margin="0,5,0,0"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <TextBlock Text="Цена у поставщика за единицу товара (руб):" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                        <xceed:DoubleUpDown Margin="0,0,5,0" x:Name="SecondCostPrice" Minimum="0"/>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                    <TextBlock Text="Единица измерения:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                    <ComboBox x:Name="UnitNameComboBox" MinWidth="50" SelectedIndex="0">
+                        <System:String>шт</System:String>
+                        <System:String>м</System:String>
+                        <System:String>м2</System:String>
+                    </ComboBox>
+                </StackPanel>
+            </StackPanel>
+            <Button Grid.Row="2" IsDefault="True" HorizontalAlignment="Stretch" Content="Применить настройки" Margin="0,10,0,0" x:Name="CloseParametrButton" Click="CloseParametrButton_Click"/>
         </Grid>
     </Grid>
 </Page>

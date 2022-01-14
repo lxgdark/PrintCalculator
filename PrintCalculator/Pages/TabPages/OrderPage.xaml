@@ -10,9 +10,9 @@
                         <!--#region Размер печатного листа-->
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Размер печатной области (листа) (ШхВ):" Margin="0,0,5,0" VerticalAlignment="Center"/>
-                            <xceed:IntegerUpDown Margin="0,0,5,0" Value="{Binding PrintPaperSize.Width}" ValueChanged="Calculation" PreviewKeyDown="IntegerUpDown_KeyDown"/>
+                            <xceed:IntegerUpDown Margin="0,0,5,0" Value="{Binding PrintPaperSize.Width}" ValueChanged="Calculation" PreviewKeyDown="UpDown_KeyDown"/>
                             <TextBlock Text="X" Margin="0,0,5,0" VerticalAlignment="Center"/>
-                            <xceed:IntegerUpDown Value="{Binding PrintPaperSize.Height}" ValueChanged="Calculation" CultureInfo="ru-RU" PreviewKeyDown="IntegerUpDown_KeyDown"/>
+                            <xceed:IntegerUpDown Value="{Binding PrintPaperSize.Height}" ValueChanged="Calculation" CultureInfo="ru-RU" PreviewKeyDown="UpDown_KeyDown"/>
                             <Button x:Name="PrintPaperSizeParametrButton" Style="{DynamicResource IconButtonStyle}" Content="/Pict/Buttons/Settings.png" ToolTip="Дополнительные параметры размера" Click="PrintPaperSizeParametrButton_Click" Tag="{Binding}"/>
                             <Border Background="{DynamicResource MessageBoxErrorColor}" Height="25" Width="25" Margin="5,0,0,0" ToolTip="Печатная область не соответсвует размеру листа или меньше размера изделия" Visibility="{Binding IsPaperSizeMatch, Converter={local:BooleanToVisibleConverter}, ConverterParameter=Not}">
                                 <Border.OpacityMask>
@@ -26,9 +26,9 @@
                         <!--#region Размер изделия-->
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Размер изделия (ШхВ):" Margin="0,0,5,0" VerticalAlignment="Center"/>
-                            <xceed:IntegerUpDown Margin="0,0,5,0" Value="{Binding ProductSize.Width}" ValueChanged="Calculation" PreviewKeyDown="IntegerUpDown_KeyDown"/>
+                            <xceed:IntegerUpDown Margin="0,0,5,0" Value="{Binding ProductSize.Width}" ValueChanged="Calculation" PreviewKeyDown="UpDown_KeyDown"/>
                             <TextBlock Text="X" Margin="0,0,5,0" VerticalAlignment="Center"/>
-                            <xceed:IntegerUpDown Value="{Binding ProductSize.Height}" ValueChanged="Calculation" PreviewKeyDown="IntegerUpDown_KeyDown"/>
+                            <xceed:IntegerUpDown Value="{Binding ProductSize.Height}" ValueChanged="Calculation" PreviewKeyDown="UpDown_KeyDown"/>
                             <Button x:Name="ProductSizeParametrButton" Style="{DynamicResource IconButtonStyle}" Content="/Pict/Buttons/Settings.png" ToolTip="Дополнительные параметры размера" Click="ProductSizeParametrButton_Click" Tag="{Binding}"/>
                             <ToggleButton Style="{DynamicResource IconToggleButtonStyle}" IsChecked="{Binding IsProductCatalog, Mode=TwoWay}" Checked="Calculation" Unchecked="Calculation" Content="/Pict/Buttons/Catalog.png" ToolTip="Изделие является брошюрой (каталогом)" Height="{Binding ElementName=ProductSizeParametrButton, Path=ActualHeight}" Margin="5,0,0,0"/>
                             <Border Margin="10,0,0,0" Visibility="{Binding IsProductCatalog, Converter={local:BooleanToVisibleConverter}}" Padding="2" BorderBrush="{DynamicResource BorderDarkColor}" BorderThickness="{DynamicResource BorderThickness}" CornerRadius="{DynamicResource BorderCornerRadiusMini}">
@@ -53,7 +53,7 @@
                         <!--#region Количество полос-->
                         <StackPanel Orientation="Horizontal"  Margin="0,10,0,0">
                             <TextBlock Text="Количество страниц (полос):" Margin="0,0,5,0" VerticalAlignment="Center"/>
-                            <xceed:IntegerUpDown Value="{Binding PageCount, Mode=TwoWay}" Minimum="{Binding PageMinimumCount}" ValueChanged="Calculation" PreviewKeyDown="IntegerUpDown_KeyDown"/>
+                            <xceed:IntegerUpDown Value="{Binding PageCount, Mode=TwoWay}" Minimum="{Binding PageMinimumCount}" ValueChanged="Calculation" PreviewKeyDown="UpDown_KeyDown"/>
                             <Border Background="{DynamicResource MessageBoxErrorColor}" Height="25" Width="25" Margin="5,0,0,0" ToolTip="Количество полос не подходит для печати каталогом/брошюрой" Visibility="{Binding IsCatalogPageCountError, Converter={local:BooleanToVisibleConverter}}">
                                 <Border.OpacityMask>
                                     <ImageBrush ImageSource="/Pict/Buttons/Information.png" Stretch="Uniform"/>
@@ -97,7 +97,7 @@
                                     <StackPanel Margin="0,5,0,0">
                                         <DockPanel LastChildFill="True">
                                             <StackPanel DockPanel.Dock="Right"  Margin="5,0,0,0" Orientation="Horizontal">
-                                                <xceed:DoubleUpDown Value="{Binding Count}" ValueChanged="Calculation" Minimum="0" PreviewKeyDown="DoubleUpDown_KeyDown"/>
+                                                <xceed:DoubleUpDown Value="{Binding Count}" ValueChanged="Calculation" Minimum="0" PreviewKeyDown="UpDown_KeyDown"/>
                                                 <Button Style="{DynamicResource IconButtonStyle}" Visibility="{Binding IsPersonalItem, Converter={local:BooleanToVisibleConverter}}" x:Name="SetPersonalItem" Content="/Pict/Buttons/Edit.png" ToolTip="Задать доп.часть вручную" Tag="{Binding}" Margin="5,0,0,0"/>
                                                 <Button Style="{DynamicResource IconButtonStyle}" Visibility="{Binding IsPersonalItem, Converter={local:BooleanToVisibleConverter}, ConverterParameter=Not}" x:Name="SelectOthetCatalogItemButton" Click="SelectOthetCatalogItemButton_Click" Content="/Pict/Buttons/Order.png" ToolTip="Выбрать из каталога" Tag="{Binding}"/>
                                                 <Button Style="{DynamicResource IconButtonStyle}" x:Name="KillOthetCatalogItemButton" Click="KillOthetCatalogItemButton_Click" Content="/Pict/Buttons/Close.png" ToolTip="Удалить позицию" Tag="{Binding}"/>
@@ -132,7 +132,7 @@
                     <StackPanel Margin="0,5,0,0">
                         <DockPanel LastChildFill="True">
                             <StackPanel DockPanel.Dock="Right"  Margin="5,0,0,0" Orientation="Horizontal">
-                                <xceed:DoubleUpDown Value="{Binding Item.Count}" ValueChanged="Calculation" Minimum="0" PreviewKeyDown="DoubleUpDown_KeyDown"/>
+                                <xceed:DoubleUpDown Value="{Binding Item.Count}" ValueChanged="Calculation" Minimum="0" PreviewKeyDown="UpDown_KeyDown"/>
                                 <Button Style="{DynamicResource IconButtonStyle}" x:Name="SetPersonalItem" Content="/Pict/Buttons/Edit.png" ToolTip="Задать доп.часть вручную" Tag="{Binding}" Margin="5,0,0,0" Visibility="{Binding Item.IsPersonalItem, Converter={local:BooleanToVisibleConverter}}" Click="SetPersonalItem_Click"/>
                                 <Button Style="{DynamicResource IconButtonStyle}" x:Name="SelectOneCatalogItemButton" Click="SelectOneCatalogItemButton_Click" Content="/Pict/Buttons/Order.png" ToolTip="Выбрать из каталога" Tag="{Binding}" Visibility="{Binding Item.IsPersonalItem, Converter={local:BooleanToVisibleConverter}, ConverterParameter=Not}"/>
                             </StackPanel>
@@ -251,7 +251,10 @@
             </Popup>
             <Popup Name="OtherOrderItemPopupList" Placement="Top" HorizontalOffset="{Binding ElementName=OtherOrderItemListPanel, Path=ActualWidth, Converter={local:MinusConverter}}" VerticalOffset="-5" StaysOpen="False" AllowsTransparency="True" PlacementTarget="{Binding ElementName=AddOtherOrderItemButton}" PopupAnimation="Scroll">
                 <StackPanel x:Name="OtherOrderItemListPanel">
-                    <Button Margin="3" x:Name="AddPersonalOrderItemButton" Click="AddPersonalOrderItemButton_Click">
+                    <Button Margin="5" x:Name="AddPersonalOrderItemButton" Click="AddPersonalOrderItemButton_Click">
+                        <Button.Effect>
+                            <DropShadowEffect Color="Black" ShadowDepth="3" BlurRadius="10"/>
+                        </Button.Effect>
                         <TextBlock Text="Создать новую одиночную составную часть" FontWeight="SemiBold" TextWrapping="Wrap" TextAlignment="Center"/>
                     </Button>
                 </StackPanel>

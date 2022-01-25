@@ -119,8 +119,8 @@ Class OrderPage
     Private Sub PrintPaperSizeParametrButton_Click(sender As Object, e As RoutedEventArgs)
         Dim page As New PaperSizeParametrPopupPage
         page.SetParametr(CType(sender.Tag, StandartOrderItem).PrintPaperSize, False, New CalculationDelegate(AddressOf Calculation))
-        OrderItemParameterFrame.Content = page
-        OrderItemParameterPopup.IsOpen = True
+        ParameterFrame.Content = page
+        ParameterPopup.IsOpen = True
     End Sub
     ''' <summary>
     ''' Задание персональной бумаги, отсутствующей в каталоге
@@ -130,8 +130,8 @@ Class OrderPage
     Private Sub SetPersonalPaper_Click(sender As Object, e As RoutedEventArgs)
         Dim page As New CreatePersonalPaperPopupPage
         page.SetParametr(CType(sender.Tag, StandartOrderItem).PaperItem, New CalculationDelegate(AddressOf Calculation))
-        OrderItemParameterFrame.Content = page
-        OrderItemParameterPopup.IsOpen = True
+        ParameterFrame.Content = page
+        ParameterPopup.IsOpen = True
     End Sub
     ''' <summary>
     ''' Настройка размера изделия
@@ -141,8 +141,8 @@ Class OrderPage
     Private Sub ProductSizeParametrButton_Click(sender As Object, e As RoutedEventArgs)
         Dim page As New PaperSizeParametrPopupPage
         page.SetParametr(CType(sender.Tag, StandartOrderItem).ProductSize, True, New CalculationDelegate(AddressOf Calculation))
-        OrderItemParameterFrame.Content = page
-        OrderItemParameterPopup.IsOpen = True
+        ParameterFrame.Content = page
+        ParameterPopup.IsOpen = True
     End Sub
     ''' <summary>
     ''' Открытие предпросмотра раскладки
@@ -152,8 +152,8 @@ Class OrderPage
     Private Sub ProductLayoutButton_Click(sender As Object, e As RoutedEventArgs)
         Dim page As New ProductLayoutPopupPage
         page.SetParametr(sender.Tag)
-        OrderItemParameterFrame.Content = page
-        OrderItemParameterPopup.IsOpen = True
+        ParameterFrame.Content = page
+        ParameterPopup.IsOpen = True
     End Sub
     ''' <summary>
     ''' Выбор бумаги
@@ -163,8 +163,8 @@ Class OrderPage
     Private Sub SelectPaperButton_Click(sender As Object, e As RoutedEventArgs)
         Dim page As New CatalogItemSelectionPopupPage
         page.SetParametr(CType(sender.Tag, StandartOrderItem).PaperItem, New CalculationDelegate(AddressOf Calculation))
-        OrderItemParameterFrame.Content = page
-        OrderItemParameterPopup.IsOpen = True
+        ParameterFrame.Content = page
+        ParameterPopup.IsOpen = True
     End Sub
     ''' <summary>
     ''' Выбр типа печати
@@ -174,8 +174,8 @@ Class OrderPage
     Private Sub SelectPrintButton_Click(sender As Object, e As RoutedEventArgs)
         Dim page As New CatalogItemSelectionPopupPage
         page.SetParametr(CType(sender.Tag, StandartOrderItem).PrintItem, New CalculationDelegate(AddressOf Calculation))
-        OrderItemParameterFrame.Content = page
-        OrderItemParameterPopup.IsOpen = True
+        ParameterFrame.Content = page
+        ParameterPopup.IsOpen = True
     End Sub
     ''' <summary>
     ''' Выбор типа резки
@@ -185,8 +185,8 @@ Class OrderPage
     Private Sub SelectCutButton_Click(sender As Object, e As RoutedEventArgs)
         Dim page As New CatalogItemSelectionPopupPage
         page.SetParametr(CType(sender.Tag, StandartOrderItem).CutItem, New CalculationDelegate(AddressOf Calculation))
-        OrderItemParameterFrame.Content = page
-        OrderItemParameterPopup.IsOpen = True
+        ParameterFrame.Content = page
+        ParameterPopup.IsOpen = True
     End Sub
 #Region "Доп. позиции стандартной составной части"
     ''' <summary>
@@ -209,8 +209,8 @@ Class OrderPage
     Private Sub SelectOthetCatalogItemButton_Click(sender As Object, e As RoutedEventArgs)
         Dim page As New CatalogItemSelectionPopupPage
         page.SetParametr(sender.Tag, New CalculationDelegate(AddressOf Calculation))
-        OrderItemParameterFrame.Content = page
-        OrderItemParameterPopup.IsOpen = True
+        ParameterFrame.Content = page
+        ParameterPopup.IsOpen = True
     End Sub
     ''' <summary>
     ''' Удаление доп. позиции каталога
@@ -256,8 +256,8 @@ Class OrderPage
     Private Sub SelectOneCatalogItemButton_Click(sender As Object, e As RoutedEventArgs)
         Dim page As New CatalogItemSelectionPopupPage
         page.SetParametr(sender.Tag.Item, New CalculationDelegate(AddressOf Calculation))
-        OrderItemParameterFrame.Content = page
-        OrderItemParameterPopup.IsOpen = True
+        ParameterFrame.Content = page
+        ParameterPopup.IsOpen = True
     End Sub
     ''' <summary>
     ''' Происходит при нажатии кнопки расчета количества в отдельной позиции
@@ -296,8 +296,8 @@ Class OrderPage
     Private Sub SetPersonalItem_Click(sender As Object, e As RoutedEventArgs)
         Dim page As New CreatePersonalCatalogItemPopupPage
         page.SetParametr(sender.Tag.Item, New CalculationDelegate(AddressOf Calculation))
-        OrderItemParameterFrame.Content = page
-        OrderItemParameterPopup.IsOpen = True
+        ParameterFrame.Content = page
+        ParameterPopup.IsOpen = True
     End Sub
 #End Region
 #Region "Расчет тиража"
@@ -380,7 +380,7 @@ Class OrderPage
     ''' </summary>
     Public Sub Calculation()
         'Закрываем всплывающее окно
-        OrderItemParameterPopup.IsOpen = False
+        ParameterPopup.IsOpen = False
         'Очищаем свойства расчета
         MeContext.ClearPropertys()
         'Проходим по составным частям
@@ -411,4 +411,10 @@ Class OrderPage
         Next
     End Sub
 
+    Private Sub ShowProductStructureButton_Click(sender As Object, e As RoutedEventArgs)
+        Dim page As New ProductStructureInfoPopupPage
+        page.SetParametr(MeContext)
+        ParameterFrame.Content = page
+        ParameterPopup.IsOpen = True
+    End Sub
 End Class

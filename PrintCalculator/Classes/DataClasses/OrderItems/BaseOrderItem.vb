@@ -1,6 +1,5 @@
 ﻿Imports System.Xml.Serialization
 Imports WPFProjectCore
-
 Namespace DataClasses
     ''' <summary>
     ''' Базовый интерфейс для составной части заказа
@@ -80,31 +79,16 @@ Namespace DataClasses
         End Property
 #End Region
 #Region "Процедуры и функции"
-#Region "Внутренние"
         ''' <summary>
-        ''' Извлекает размер листа из единицы измерения бумаги
+        ''' Переопределяемая функция, которая возвращает список составных частей наменклатуры
         ''' </summary>
-        ''' <param name="unit"></param>
         ''' <returns></returns>
-        Public Shared Function GetSheetSize(unit As String) As Size
-            'Базовый размер листа 450х320
-            Dim result As New Size(450, 320)
-            'Если единица измерения начинается с L...
-            If unit.StartsWith("L") Then
-                '...то удаляем L и разбиваем на две части по букве "х"
-                Dim s As String() = unit.TrimStart("L".Chars(0)).Split("x".ToCharArray, StringSplitOptions.RemoveEmptyEntries)
-                'Первая часть ширина
-                result.Width = s(0)
-                'Вторая часть высота
-                result.Height = s(1)
-            ElseIf unit = "A3" Then
-                result = New Size(420, 297)
-            End If
-            Return result
-        End Function
-#End Region
-#Region "Реализация интерфейса"
+        MustOverride Function GetProductStructureList() As List(Of ProductStructureInformer)
+        ''' <summary>
+        ''' Переопределяемая процедура в которой производятся вычисления данной позиции расчета
+        ''' </summary>
         Public MustOverride Sub Calculation() Implements IBaseOrderItem.Calculation
+#Region "Реализация интерфейса"
         Public Function GetProductCount() As Integer Implements IBaseOrderItem.GetProductCount
             Return ProductCount
         End Function

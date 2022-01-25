@@ -1,6 +1,5 @@
 ﻿Imports System.Collections.ObjectModel
 Imports WPFProjectCore
-
 Namespace DataClasses
     Public Class SingleOrderItem
         Inherits BaseOrderItem
@@ -41,6 +40,26 @@ Namespace DataClasses
             IsValidCostPrice = Item.GetValideCalculation
             ProductCostPrice = Item.GetCostPrice
         End Sub
+        ''' <summary>
+        ''' Возвращает составные части наменклатуры
+        ''' </summary>
+        ''' <returns></returns>
+        Public Overrides Function GetProductStructureList() As List(Of ProductStructureInformer)
+            Dim result As New List(Of ProductStructureInformer)
+            Dim resultCatalogItem As CatalogItem
+            If Item.BasicCatalogItem.ItemCategory <> CatalogItem.ItemCategoryEnum.MATERIAL Then
+                resultCatalogItem = Item.MaterialCatalogItem
+            Else
+                resultCatalogItem = Item.BasicCatalogItem
+            End If
+            Dim psi As New ProductStructureInformer With {
+                    .Code = resultCatalogItem.Code,
+                    .Name = resultCatalogItem.Name,
+                    .Unit = resultCatalogItem.Unit,
+                    .Count = Item.Count}
+            result.Add(psi)
+            Return result
+        End Function
 #End Region
     End Class
 End Namespace

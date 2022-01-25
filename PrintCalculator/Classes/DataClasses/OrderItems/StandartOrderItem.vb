@@ -244,7 +244,7 @@ Namespace DataClasses
             Next
             'Если все задлано, продолжаем расчет
             If IsValidCostPrice Then
-                Dim sheetSize = GetSheetSize(PaperItem.Unit)
+                Dim sheetSize = Workers.PaperSizeWorker.GetSheetSize(PaperItem.Unit)
                 Dim paperHeight As Double = PrintPaperSize.Height
                 Dim paperWidth As Double = PrintPaperSize.Width
                 'Высчитываем себестоимость печатного листа исходя из того, что ряд листов может поставляться больше, чем SRA3
@@ -348,6 +348,38 @@ Namespace DataClasses
                 Me.OtherOrderPositionList.Add(sop)
             Next
         End Sub
+
+        Public Overrides Function GetProductStructureList() As List(Of ProductStructureInformer)
+            Dim result As New List(Of ProductStructureInformer)
+
+            Dim sheetSize = Workers.PaperSizeWorker.GetSheetSize(PaperItem.Unit)
+            Dim paperHeight As Double = PrintPaperSize.Height
+            Dim paperWidth As Double = PrintPaperSize.Width
+            'Высчитываем себестоимость печатного листа исходя из того, что ряд листов может поставляться больше, чем SRA3
+            Dim countPaperInSheet As Integer = GetProductInPaper(sheetSize, New Size(paperWidth, paperHeight))
+            Dim psi As New ProductStructureInformer With {
+                    .Code = PaperItem.Code,
+                    .Name = PaperItem.Name,
+                    .Unit = PaperItem.Unit,
+                    .Count = 1 / countPaperInSheet / GetProductCount()
+            }
+            result.Add(psi)
+            For Each l In OtherOrderPositionList
+                Dim resultCatalogItem As CatalogItem
+                If l.BasicCatalogItem.ItemCategory <> CatalogItem.ItemCategoryEnum.MATERIAL Then
+                    resultCatalogItem = l.MaterialCatalogItem
+                Else
+                    resultCatalogItem = l.BasicCatalogItem
+                End If
+                Dim psi1 As New ProductStructureInformer With {
+                        .Code = resultCatalogItem.Code,
+                        .Name = resultCatalogItem.Name,
+                        .Unit = resultCatalogItem.Unit,
+                        .Count = l.Count}
+                result.Add(psi1)
+            Next
+            Return result
+        End Function
 #End Region
     End Class
 End Namespace

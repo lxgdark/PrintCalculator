@@ -105,6 +105,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Classes\DataClasses\OrderItems\SinglePositionInOrder.vb" />
+    <Compile Include="Classes\DataClasses\Other\ProductStructureInformer.vb" />
     <Compile Include="Classes\DataClasses\SavedOrderObject.vb" />
     <Compile Include="Classes\OtherFunctions.vb" />
     <Compile Include="MainPage.xaml.vb">
@@ -124,6 +125,9 @@
     </Compile>
     <Compile Include="Pages\PopupPages\ProductLayoutPopupPage.xaml.vb">
       <DependentUpon>ProductLayoutPopupPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\PopupPages\ProductStructureInfoPopupPage.xaml.vb">
+      <DependentUpon>ProductStructureInfoPopupPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\SettingPage.xaml.vb">
       <DependentUpon>SettingPage.xaml</DependentUpon>
@@ -199,6 +203,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\PopupPages\ProductLayoutPopupPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\PopupPages\ProductStructureInfoPopupPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -341,5 +349,6 @@
     <Resource Include="Icon.ico" />
     <SplashScreen Include="SplashScreen.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

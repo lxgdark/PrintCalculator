@@ -9,8 +9,8 @@ Class CreatePersonalPaperPopupPage
         catalogItem = _catalogItem
 
         PaperNameTextBox.Text = catalogItem.Name
-        HeightPaperSize.Value = BaseOrderItem.GetSheetSize(catalogItem.Unit).Height
-        WidthPaperSize.Value = BaseOrderItem.GetSheetSize(catalogItem.Unit).Width
+        HeightPaperSize.Value = Workers.PaperSizeWorker.GetSheetSize(catalogItem.Unit).Height
+        WidthPaperSize.Value = Workers.PaperSizeWorker.GetSheetSize(catalogItem.Unit).Width
         CostPrice.Value = catalogItem.CostPrice
     End Sub
 

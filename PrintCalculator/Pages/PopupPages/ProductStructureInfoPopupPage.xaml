@@ -1,0 +1,44 @@
+﻿<Page x:Class="ProductStructureInfoPopupPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="clr-namespace:PrintCalculator"  xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit" xmlns:dclass="clr-namespace:PrintCalculator.DataClasses">
+    <Grid Background="{DynamicResource BackgroundLightColor}" TextBlock.FontSize="14" TextBlock.FontWeight="SemiBold">
+        <ScrollViewer Margin="10" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Состав на:" VerticalAlignment="Center"/>
+                    <TextBox x:Name="ComposPerQuantityTextBox" IsReadOnly="True" Text="5" MinWidth="80" Margin="5,0,5,0" MinHeight="30"/>
+                    <TextBlock Text="шт." VerticalAlignment="Center"/>
+                </StackPanel>
+                <Grid Margin="0,10,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Код:"/>
+                    <TextBlock Text="Наименование:" Grid.Column="1"/>
+                    <TextBlock Text="Ед. изм:" Grid.Column="2"/>
+                    <TextBlock Text="Кол-во:" Grid.Column="3"/>
+                </Grid>
+                <ItemsControl x:Name="StructureList" Margin="0,5,0,0">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type dclass:ProductStructureInformer}">
+                            <Grid Margin="0,0,0,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox IsReadOnly="True" Grid.Column="0" MinWidth="10" Text="{Binding Code}" Margin="0,0,5,0" MinHeight="30"/>
+                                <TextBox IsReadOnly="True" Grid.Column="1" MinWidth="10" Text="{Binding Name}" Margin="0,0,5,0" MinHeight="30"/>
+                                <TextBox IsReadOnly="True" Grid.Column="2" MinWidth="10" Text="{Binding Unit}" Margin="0,0,5,0" MinHeight="30"/>
+                                <TextBox IsReadOnly="True" Grid.Column="3" MinWidth="10" Text="{Binding Count}" Margin="0,0,5,0" MinHeight="30"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

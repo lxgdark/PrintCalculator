@@ -14,6 +14,27 @@ Namespace Workers
             SetStandartSize()
             Return MyBase.StartActions(app)
         End Function
+        ''' <summary>
+        ''' Извлекает размер листа из единицы измерения бумаги
+        ''' </summary>
+        ''' <param name="unit"></param>
+        ''' <returns></returns>
+        Public Shared Function GetSheetSize(unit As String) As Size
+            'Базовый размер листа 450х320
+            Dim result As New Size(450, 320)
+            'Если единица измерения начинается с L...
+            If unit.StartsWith("L") Then
+                '...то удаляем L и разбиваем на две части по букве "х"
+                Dim s As String() = unit.ToUpper.TrimStart("L".Chars(0)).Split("X".ToCharArray, StringSplitOptions.RemoveEmptyEntries)
+                'Первая часть ширина
+                result.Width = s(0)
+                'Вторая часть высота
+                result.Height = s(1)
+            ElseIf unit = "A3" Then
+                result = New Size(420, 297)
+            End If
+            Return result
+        End Function
 #Region "Внутренние"
         Private Sub SetStandartSize()
             Dim sra3 As New PaperSizeItem

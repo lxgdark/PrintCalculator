@@ -39,14 +39,18 @@ Class CreatePersonalCatalogItemPopupPage
         If IsSecondMaterialCheck.IsChecked And (SecondPositionNameTextBox.Text = "" Or SecondCostPrice.Value <= 0) Then Exit Sub
         catalogItem.Name = PositionNameTextBox.Text
         catalogItem.CostPrice = CostPrice.Value
+        catalogItem.Code = "нетВкаталоге"
         If IsSecondMaterialCheck.IsChecked Then
+            catalogItem.ItemCategory = CatalogItem.ItemCategoryEnum.SERVICE
             secondcatalogItem.Name = SecondPositionNameTextBox.Text
             secondcatalogItem.CostPrice = SecondCostPrice.Value
             secondcatalogItem.Unit = UnitNameComboBox.SelectedItem
+            secondcatalogItem.Code = "нетВкаталоге"
         Else
             secondcatalogItem.Name = ""
             secondcatalogItem.CostPrice = 0
             catalogItem.Unit = UnitNameComboBox.SelectedItem
+            catalogItem.ItemCategory = CatalogItem.ItemCategoryEnum.MATERIAL
         End If
         Windows.Application.Current.Dispatcher.Invoke(Calculation)
     End Sub

@@ -239,15 +239,17 @@
                     </ScrollViewer>
                     <Border BorderBrush="{DynamicResource BorderDarkColor}" BorderThickness="1" CornerRadius="1" Margin="0,10,0,10" Grid.Row="2"/>
                     <!--Кнопки действий с расчетом-->
-                    <StackPanel Orientation="Horizontal" Grid.Row="3" HorizontalAlignment="Center" Margin="0,0,0,-10">
+                    <StackPanel Orientation="Horizontal" Grid.Row="3" HorizontalAlignment="Center" Margin="0,0,0,-10" IsEnabled="{Binding MinPrintCopy}">
                         <Button x:Name="SaveOrderButton" Style="{StaticResource IconButtonStyle}" Click="SaveOrderButton_Click" Height="50" Width="50" Content="/Pict/Buttons/Save.png" ToolTip="Сохранить расчет"/>
                         <Button x:Name="CopyOrderButton" Style="{StaticResource IconButtonStyle}" Click="CopyOrderButton_Click" Height="50" Width="50" Content="/Pict/Buttons/Copy.png" ToolTip="Копировать расчет"/>
+                        <Border BorderBrush="{DynamicResource BorderDarkColor}" BorderThickness="{DynamicResource BorderThickness}" CornerRadius="2" Margin="5,0,5,0"/>
+                        <Button x:Name="ShowProductStructureButton" Style="{StaticResource IconButtonStyle}" Click="ShowProductStructureButton_Click" Height="50" Width="50" Content="/Pict/Buttons/Information.png" ToolTip="Показать состав номенклатуры"/>
                     </StackPanel>
                 </Grid>
             </GroupBox>
             <!--#region Всплывающие окна-->
-            <Popup Name="OrderItemParameterPopup" StaysOpen="False" AllowsTransparency="True" PlacementTarget="{Binding ElementName=CalculatePanel}" Placement="Center" Height="{Binding ElementName=CalculatePanel, Path=ActualHeight}" Width="{Binding ElementName=CalculatePanel, Path=ActualWidth}" PopupAnimation="Slide">
-                <Frame Name="OrderItemParameterFrame" NavigationUIVisibility="Hidden"/>
+            <Popup Name="ParameterPopup" StaysOpen="False" AllowsTransparency="True" PlacementTarget="{Binding ElementName=CalculatePanel}" Placement="Center" Height="{Binding ElementName=CalculatePanel, Path=ActualHeight}" Width="{Binding ElementName=CalculatePanel, Path=ActualWidth}" PopupAnimation="Slide">
+                <Frame Name="ParameterFrame" NavigationUIVisibility="Hidden"/>
             </Popup>
             <Popup Name="OtherOrderItemPopupList" Placement="Top" HorizontalOffset="{Binding ElementName=OtherOrderItemListPanel, Path=ActualWidth, Converter={local:MinusConverter}}" VerticalOffset="-5" StaysOpen="False" AllowsTransparency="True" PlacementTarget="{Binding ElementName=AddOtherOrderItemButton}" PopupAnimation="Scroll">
                 <StackPanel x:Name="OtherOrderItemListPanel">

@@ -105,7 +105,7 @@ Class CatalogItemSelectionPopupPage
             'Проходим по массиву слов и проверяем удовлетворяет ли поиск данным словам
             For Each x In strmass
                 'Суммируем резултат
-                result = result AndAlso citem.Name.ToLower.IndexOf(x) > -1 Or citem.GroupCode.ToLower.IndexOf(x) > -1
+                result = result AndAlso citem.Name.ToLower.IndexOf(x) > -1
             Next
             'Возвращаем результат
             e.Accepted = result
@@ -132,6 +132,8 @@ Class CatalogItemSelectionPopupPage
     Private Sub CatalogListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs)
         'Если страница еще не прогрузилась или в основном каталоге ничего не выбрано, выходим из процедуры
         If SecondCatalogListBox Is Nothing Or CatalogListBox.SelectedIndex = -1 Then Exit Sub
+        'Сбрасываем выделение вторичного каталога
+        SecondCatalogListBox.SelectedIndex = -1
         'Задаем тэг для поиска вспомогательных материалов
         ItemTag = CType(CatalogListBox.SelectedItem, CatalogItem).ItemTag
         'Проходим списком по второстпенному каталогу
@@ -177,6 +179,14 @@ Class CatalogItemSelectionPopupPage
 #End Region
 #Region "Фиксация выбора"
     ''' <summary>
+    ''' Происходит при двойном нажатии в каталогах
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub Catalog_MouseDoubleClick(sender As Object, e As MouseButtonEventArgs)
+        SelectedItem()
+    End Sub
+    ''' <summary>
     ''' Возникает при нажатии кнопки выбора
     ''' </summary>
     ''' <param name="sender"></param>
@@ -195,14 +205,14 @@ Class CatalogItemSelectionPopupPage
                 '...и доп. материал выбран...
                 If SecondCatalogListBox.SelectedIndex > -1 Then
                     '...сохранаяем выбранную второстепенную позицию
-                    SecondcatalogItem.SetPropertys(SecondCatalogListBox.SelectedItem)
+                    secondcatalogItem.SetPropertys(SecondCatalogListBox.SelectedItem)
                 Else
                     'В противном случае выходим из процедуры
                     Exit Sub
                 End If
             Else
                 'Если вспомогательная панель закрыта, то обнуляем данные о вспомогательном материале
-                SecondcatalogItem = New CatalogItem
+                If secondcatalogItem IsNot Nothing Then secondcatalogItem.SetPropertys(New CatalogItem)
             End If
             'Сохраняем выбранную позицию
             catalogItem.SetPropertys(CatalogListBox.SelectedItem)
@@ -212,5 +222,6 @@ Class CatalogItemSelectionPopupPage
             Windows.Application.Current.Dispatcher.Invoke(Calculation)
         End If
     End Sub
+
 #End Region
 End Class

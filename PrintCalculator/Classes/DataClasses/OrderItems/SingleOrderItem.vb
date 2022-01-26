@@ -38,6 +38,7 @@ Namespace DataClasses
 #Region "Процедуры и функции"
         Public Overrides Sub Calculation()
             IsValidCostPrice = Item.GetValideCalculation
+            ProductCount = Item.Count
             ProductCostPrice = Item.GetCostPrice
         End Sub
         ''' <summary>

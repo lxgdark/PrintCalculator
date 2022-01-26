@@ -393,7 +393,6 @@ Class OrderPage
             If item.GetIsValidCostPrice Then
                 'Если данные валидны, то вычисляем параметры расчета
                 MeContext.MinPrintCopy = IIf(item.GetProductCount > MeContext.MinPrintCopy, item.GetProductCount, MeContext.MinPrintCopy)
-                MeContext.MinCostPrice += item.GetProductCostPrice * item.GetProductCount
                 MeContext.ProductCostPrice += item.GetProductCostPrice
             Else
                 'Если хотя бы одна составная часть имеет не все данные для расчета, то обнуляем расчетные данные и выходим из процедуры
@@ -401,6 +400,8 @@ Class OrderPage
                 Exit For
             End If
         Next
+        'Задаем минимальную себестоимость
+        MeContext.MinCostPrice = MeContext.MinPrintCopy * MeContext.ProductCostPrice
         'Расчитываем значение для сигнальной формулы
         Dim sinalFormulas As New SignalCalculationFormula
         MeContext.MinPrice = sinalFormulas.GetCalculationSumm(MeContext.MinPrintCopy, MeContext.ProductCostPrice)
@@ -414,7 +415,19 @@ Class OrderPage
     Private Sub ShowProductStructureButton_Click(sender As Object, e As RoutedEventArgs)
         Dim page As New ProductStructureInfoPopupPage
         page.SetParametr(MeContext)
-        ParameterFrame.Content = page
-        ParameterPopup.IsOpen = True
+        ProductStructureInfoFrame.Content = page
+        ProductStructureInfoGrid.Visibility = Visibility.Visible
+    End Sub
+
+    Private Sub CopyPrintingPriceButton_Click(sender As Object, e As RoutedEventArgs)
+        Dim pci As PrintCopyCountItem = sender.Tag
+        Dim result As String = "Цена за тираж "
+        result &= pci.PrintCopyCount & " шт.: " & pci.SalePriceForAll.ToString("C", Globalization.CultureInfo.GetCultureInfo("ru-RU"))
+        result &= " (" & pci.SalePriceForOne.ToString("C", Globalization.CultureInfo.GetCultureInfo("ru-RU")) & " за шт.)"
+        Clipboard.SetText(result)
+    End Sub
+
+    Private Sub CloseProductStructureInfoButton_Click(sender As Object, e As RoutedEventArgs)
+        ProductStructureInfoGrid.Visibility = Visibility.Collapsed
     End Sub
 End Class

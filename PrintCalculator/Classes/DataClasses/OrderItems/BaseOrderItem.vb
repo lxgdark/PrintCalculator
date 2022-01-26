@@ -34,7 +34,7 @@ Namespace DataClasses
 
 #Region "Свойства"
 #Region "Внутренние"
-        Private productCountValue As Integer = 0
+        Private productCountValue As Double = 0
         Private productCostPriceValue As Double = 0
         Private isValidCostPriceValue As Boolean = False
 #End Region
@@ -42,11 +42,11 @@ Namespace DataClasses
         ''' Количестве изделий на листе
         ''' </summary>
         ''' <returns></returns>
-        Public Property ProductCount As Integer
+        Public Property ProductCount As Double
             Get
                 Return productCountValue
             End Get
-            Set(value As Integer)
+            Set(value As Double)
                 productCountValue = value
                 OnPropertyChanged(NameOf(ProductCount))
             End Set

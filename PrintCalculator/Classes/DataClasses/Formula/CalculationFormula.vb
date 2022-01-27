@@ -24,10 +24,10 @@ Namespace DataClasses
         Public Function GetCalculationSumm(printCopyCount As Integer, costPriceForOne As Double) As Double Implements ICalculationFormula.GetCalculationSumm
             Dim result As Double = 0
             Dim costPriceForAll As Double = printCopyCount * costPriceForOne
-            Dim percent As Double = 150 - costPriceForAll / 150
+            Dim percent As Double = 115 - costPriceForAll / 115
             If percent < 40 Then percent = 40
             result = costPriceForAll + costPriceForAll / 100 * percent
-            Return result
+            Return Math.Round(result)
         End Function
 #End Region
     End Class
@@ -43,14 +43,13 @@ Namespace DataClasses
         ''' <param name="printCopyCount"></param>
         ''' <param name="costPriceForOne"></param>
         ''' <returns>
-        ''' % наценки = 200 - сумма себестоимости/200 (если результат меньше 40, то ставим 40)
         ''' При себестоимости меньше 1000 р., добавляется 300 р. к сумме на приладку и затраты времени оменеджера
         ''' </returns>
         Public Function GetCalculationSumm(printCopyCount As Integer, costPriceForOne As Double) As Double Implements ICalculationFormula.GetCalculationSumm
             Dim result As Double = 0
-            result = printCopyCount * costPriceForOne * 3
+            result = printCopyCount * costPriceForOne * 2.5
             If result < 1000 Then result = result + 300
-            Return result
+            Return Math.Round(result)
         End Function
 #End Region
     End Class

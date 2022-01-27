@@ -381,8 +381,13 @@ Class OrderPage
     Public Sub Calculation()
         'Закрываем всплывающее окно
         ParameterPopup.IsOpen = False
+        'Скрываем панель состава продукта, если она открыта
+        ProductStructureInfoGrid.Visibility = Visibility.Collapsed
         'Очищаем свойства расчета
         MeContext.ClearPropertys()
+        Dim MinPrintCopy As Integer = 0
+        Dim ProductCostPrice As Double = 0
+
         'Проходим по составным частям
         For Each item In MeContext.OrderItemList
             'Вызываем в составных частях процедуру просчета
@@ -392,14 +397,18 @@ Class OrderPage
             'Проверяем валидность указанных данных в составных частях
             If item.GetIsValidCostPrice Then
                 'Если данные валидны, то вычисляем параметры расчета
-                MeContext.MinPrintCopy = IIf(item.GetProductCount > MeContext.MinPrintCopy, item.GetProductCount, MeContext.MinPrintCopy)
-                MeContext.ProductCostPrice += item.GetProductCostPrice
+                MinPrintCopy = IIf(item.GetProductCount > MeContext.MinPrintCopy, item.GetProductCount, MeContext.MinPrintCopy)
+                ProductCostPrice += item.GetProductCostPrice
             Else
                 'Если хотя бы одна составная часть имеет не все данные для расчета, то обнуляем расчетные данные и выходим из процедуры
-                MeContext.ClearPropertys()
+                MinPrintCopy = 0
+                ProductCostPrice = 0
                 Exit For
             End If
         Next
+        MeContext.MinPrintCopy = MinPrintCopy
+        MeContext.ProductCostPrice = ProductCostPrice
+
         'Задаем минимальную себестоимость
         MeContext.MinCostPrice = MeContext.MinPrintCopy * MeContext.ProductCostPrice
         'Расчитываем значение для сигнальной формулы
@@ -422,7 +431,7 @@ Class OrderPage
     Private Sub CopyPrintingPriceButton_Click(sender As Object, e As RoutedEventArgs)
         Dim pci As PrintCopyCountItem = sender.Tag
         Dim result As String = "Цена за тираж "
-        result &= pci.PrintCopyCount & " шт.: " & pci.SalePriceForAll.ToString("C", Globalization.CultureInfo.GetCultureInfo("ru-RU"))
+        result &= pci.PrintCopyCount & " шт.: " & pci.SalePriceForAll.ToString("C0", Globalization.CultureInfo.GetCultureInfo("ru-RU"))
         result &= " (" & pci.SalePriceForOne.ToString("C", Globalization.CultureInfo.GetCultureInfo("ru-RU")) & " за шт.)"
         Clipboard.SetText(result)
     End Sub

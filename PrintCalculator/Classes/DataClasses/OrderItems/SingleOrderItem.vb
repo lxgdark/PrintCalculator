@@ -48,11 +48,12 @@ Namespace DataClasses
         Public Overrides Function GetProductStructureList() As List(Of ProductStructureInformer)
             Dim result As New List(Of ProductStructureInformer)
             Dim resultCatalogItem As CatalogItem
-            If Item.BasicCatalogItem.ItemCategory <> CatalogItem.ItemCategoryEnum.MATERIAL Then
+            If Item.MaterialCatalogItem.Name <> "" Then
                 resultCatalogItem = Item.MaterialCatalogItem
             Else
                 resultCatalogItem = Item.BasicCatalogItem
             End If
+            If resultCatalogItem.ItemCategory = CatalogItem.ItemCategoryEnum.SERVICE Then Return result
             Dim psi As New ProductStructureInformer With {
                     .Code = resultCatalogItem.Code,
                     .Name = resultCatalogItem.Name,
@@ -60,6 +61,14 @@ Namespace DataClasses
                     .Count = Item.Count}
             result.Add(psi)
             Return result
+        End Function
+        ''' <summary>
+        ''' Возвращает минимальный тираж для данной позиции
+        ''' </summary>
+        ''' <returns></returns>
+        Public Overrides Function GetMinPrintCopy() As Integer
+            'Так как это одиночная позиция, то ее минимальный тираж всегда равен 1
+            Return 1
         End Function
 #End Region
     End Class

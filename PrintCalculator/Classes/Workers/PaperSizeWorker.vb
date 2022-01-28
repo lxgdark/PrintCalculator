@@ -35,6 +35,25 @@ Namespace Workers
             End If
             Return result
         End Function
+        ''' <summary>
+        ''' Возвращает количество одних размеров в другом
+        ''' </summary>
+        ''' <returns>Помогает узнать сколько маленьких листов помещается в большой</returns>
+        Public Shared Function SizeInSizeCount(size1 As Size, size2 As Size) As Integer
+            'Количиство изделий по горизонтали в первой ориентации
+            Dim horizontalCount1 As Integer = Math.Truncate(size1.Height / size2.Height)
+            'Количиство изделий по вертикали в первой ориентации
+            Dim verticalCount1 As Integer = Math.Truncate(size1.Width / size2.Width)
+            'Количиство изделий по горизонтали во второй ориентации
+            Dim horizontalCount2 As Integer = Math.Truncate(size1.Width / size2.Height)
+            'Количиство изделий по вертикали во второй ориентации
+            Dim verticalCount2 As Integer = Math.Truncate(size1.Height / size2.Width)
+            If horizontalCount1 * verticalCount1 > horizontalCount2 * verticalCount2 Then
+                Return horizontalCount1 * verticalCount1
+            Else
+                Return horizontalCount2 * verticalCount2
+            End If
+        End Function
 #Region "Внутренние"
         Private Sub SetStandartSize()
             Dim sra3 As New PaperSizeItem

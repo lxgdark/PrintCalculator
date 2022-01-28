@@ -361,16 +361,17 @@ Namespace DataClasses
                     .Code = PaperItem.Code,
                     .Name = PaperItem.Name,
                     .Unit = PaperItem.Unit,
-                    .Count = 1 / countPaperInSheet / GetProductCount()
+                    .Count = 1 / countPaperInSheet / GetProductCount() * PageCount / IIf(PrintItem.Name.EndsWith("4") Or PrintItem.Name.EndsWith("1"), 2, 1) / IIf(IsProductCatalog, 2, 1)
             }
             result.Add(psi)
             For Each l In OtherOrderPositionList
                 Dim resultCatalogItem As CatalogItem
-                If l.BasicCatalogItem.ItemCategory <> CatalogItem.ItemCategoryEnum.MATERIAL Then
+                If l.MaterialCatalogItem.Name <> "" Then
                     resultCatalogItem = l.MaterialCatalogItem
                 Else
                     resultCatalogItem = l.BasicCatalogItem
                 End If
+                If resultCatalogItem.ItemCategory = CatalogItem.ItemCategoryEnum.SERVICE Then Exit For
                 Dim psi1 As New ProductStructureInformer With {
                         .Code = resultCatalogItem.Code,
                         .Name = resultCatalogItem.Name,
@@ -379,6 +380,14 @@ Namespace DataClasses
                 result.Add(psi1)
             Next
             Return result
+        End Function
+        ''' <summary>
+        ''' Возвращает минимальный тираж для данной позиции
+        ''' </summary>
+        ''' <returns></returns>
+        Public Overrides Function GetMinPrintCopy() As Integer
+            'Для стандартной позиции минимальный тираж равен количеству изделий на листе
+            Return ProductCount
         End Function
 #End Region
     End Class

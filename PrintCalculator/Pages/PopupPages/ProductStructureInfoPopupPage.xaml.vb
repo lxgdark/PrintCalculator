@@ -10,4 +10,8 @@ Class ProductStructureInfoPopupPage
             Next
         Next
     End Sub
+
+    Private Sub TextBox_TextChanged(sender As TextBox, e As TextChangedEventArgs)
+        Debug.WriteLine(sender.Text)
+    End Sub
 End Class

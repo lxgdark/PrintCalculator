@@ -397,7 +397,7 @@ Class OrderPage
             'Проверяем валидность указанных данных в составных частях
             If item.GetIsValidCostPrice Then
                 'Если данные валидны, то вычисляем параметры расчета
-                MinPrintCopy = IIf(item.GetProductCount > MeContext.MinPrintCopy, item.GetProductCount, MeContext.MinPrintCopy)
+                MinPrintCopy = IIf(item.GetMinPrintCopy > MinPrintCopy, item.GetMinPrintCopy, MinPrintCopy)
                 ProductCostPrice += item.GetProductCostPrice
             Else
                 'Если хотя бы одна составная часть имеет не все данные для расчета, то обнуляем расчетные данные и выходим из процедуры

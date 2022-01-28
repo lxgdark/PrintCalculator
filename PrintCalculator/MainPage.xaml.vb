@@ -84,6 +84,7 @@ Class MainPage
             My.AppCore.GlobalPagesList.Add(New GlobalPageWorker With {.Header = IO.Path.GetFileNameWithoutExtension(ofd.FileName), .IsStartPage = False, .OrderObject = newSOP})
             'Переходим к открытому расчету
             OrderTabControl.SelectedIndex = My.AppCore.GlobalPagesList.Count - 1
+            My.AppCore.CurentSelectedPage = AppCore.CurentSelectedPageEnum.Home
         Catch ex As Exception
             'Если произошла ошибка, то устанвливаем флаг
             iserror = True

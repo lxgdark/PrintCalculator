@@ -3,6 +3,8 @@
     <Grid Background="{DynamicResource BackgroundLightColor}" TextBlock.FontSize="14" TextBlock.FontWeight="SemiBold">
         <ScrollViewer Margin="10" VerticalScrollBarVisibility="Auto">
             <StackPanel>
+                <CheckBox x:Name="ShowInSRA3CheckBox" Content="Отображать большие листы в SRA3" Margin="0,0,0,10" IsChecked="True"/>
+                <Border BorderBrush="{DynamicResource BorderDarkColor}" BorderThickness="1" Margin="0,0,0,25"/>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Состав на:" VerticalAlignment="Center"/>
                     <TextBox x:Name="ComposPerQuantityTextBox" IsReadOnly="True" Text="5" MinWidth="80" Margin="5,0,5,0" MinHeight="30"/>
@@ -32,8 +34,23 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBox IsReadOnly="True" Grid.Column="0" MinWidth="10" Text="{Binding Code}" Margin="0,0,5,0" MinHeight="30"/>
                                 <TextBox IsReadOnly="True" Grid.Column="1" MinWidth="10" Text="{Binding Name}" Margin="0,0,5,0" MinHeight="30"/>
-                                <TextBox IsReadOnly="True" Grid.Column="2" MinWidth="10" Text="{Binding Unit}" Margin="0,0,5,0" MinHeight="30"/>
-                                <TextBox IsReadOnly="True" Grid.Column="3" MinWidth="10" Text="{Binding Count}" Margin="0,0,5,0" MinHeight="30"/>
+                                <TextBox IsReadOnly="True" Grid.Column="2" MinWidth="10" Margin="0,0,5,0" MinHeight="30">
+                                    <TextBox.Text>
+                                        <MultiBinding Converter="{local:StructureUnitNameSRA3Converter}">
+                                            <Binding Path="Unit"/>
+                                            <Binding ElementName="ShowInSRA3CheckBox" Path="IsChecked"/>
+                                        </MultiBinding>
+                                    </TextBox.Text>
+                                </TextBox>
+                                <TextBox TextChanged="TextBox_TextChanged" IsReadOnly="True" Grid.Column="3" MinWidth="10" Margin="0,0,5,0" MinHeight="30">
+                                    <TextBox.Text>
+                                        <MultiBinding Converter="{local:StructureUnitCountSRA3Converter}">
+                                            <Binding Path="Count"/>
+                                            <Binding Path="Unit"/>
+                                            <Binding ElementName="ShowInSRA3CheckBox" Path="IsChecked"/>
+                                        </MultiBinding>
+                                    </TextBox.Text>
+                                </TextBox>
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

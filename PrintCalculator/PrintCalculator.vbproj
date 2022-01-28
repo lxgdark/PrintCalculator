@@ -104,6 +104,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Classes\Converters\MultiConverters.vb" />
     <Compile Include="Classes\DataClasses\OrderItems\SinglePositionInOrder.vb" />
     <Compile Include="Classes\DataClasses\Other\ProductStructureInformer.vb" />
     <Compile Include="Classes\DataClasses\SavedOrderObject.vb" />

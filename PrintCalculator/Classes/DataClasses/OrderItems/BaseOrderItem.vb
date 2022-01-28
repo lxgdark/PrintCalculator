@@ -19,8 +19,21 @@ Namespace DataClasses
         ''' </summary>
         ''' <returns></returns>
         Function GetProductCostPrice() As Double
-
+        ''' <summary>
+        ''' Возвращает флаг. показывающий готовность позиции к расчету
+        ''' </summary>
+        ''' <returns></returns>
         Function GetIsValidCostPrice() As Boolean
+        ''' <summary>
+        ''' Функция, которая возвращает список составных частей наменклатуры
+        ''' </summary>
+        ''' <returns></returns>
+        Function GetProductStructureList() As List(Of ProductStructureInformer)
+        ''' <summary>
+        ''' Возвращает минимальный тираж для данной позиции
+        ''' </summary>
+        ''' <returns></returns>
+        Function GetMinPrintCopy() As Integer
     End Interface
     ''' <summary>
     ''' Базовый класс составной части расчета
@@ -83,22 +96,37 @@ Namespace DataClasses
         ''' Переопределяемая функция, которая возвращает список составных частей наменклатуры
         ''' </summary>
         ''' <returns></returns>
-        MustOverride Function GetProductStructureList() As List(Of ProductStructureInformer)
+        Public MustOverride Function GetProductStructureList() As List(Of ProductStructureInformer) Implements IBaseOrderItem.GetProductStructureList
         ''' <summary>
         ''' Переопределяемая процедура в которой производятся вычисления данной позиции расчета
         ''' </summary>
         Public MustOverride Sub Calculation() Implements IBaseOrderItem.Calculation
-#Region "Реализация интерфейса"
+        ''' <summary>
+        ''' Возвращает минимальное число копий для данной позиции
+        ''' </summary>
+        ''' <returns></returns>
+        Public MustOverride Function GetMinPrintCopy() As Integer Implements IBaseOrderItem.GetMinPrintCopy
+        ''' <summary>
+        ''' Возвращает количество текущей позиции
+        ''' </summary>
+        ''' <returns></returns>
         Public Function GetProductCount() As Integer Implements IBaseOrderItem.GetProductCount
             Return ProductCount
         End Function
+        ''' <summary>
+        ''' Возвращает себестоимость позиции
+        ''' </summary>
+        ''' <returns></returns>
         Public Function GetProductCostPrice() As Double Implements IBaseOrderItem.GetProductCostPrice
             Return ProductCostPrice
         End Function
+        ''' <summary>
+        ''' Возвращает минимальный тираж для данной позиции
+        ''' </summary>
+        ''' <returns></returns>
         Public Function GetIsValidCostPrice() As Boolean Implements IBaseOrderItem.GetIsValidCostPrice
             Return IsValidCostPrice
         End Function
-#End Region
 #End Region
     End Class
 End Namespace
